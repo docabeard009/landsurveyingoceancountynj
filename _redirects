@@ -1,0 +1,3 @@
+# Pretty URLs -> .html (Netlify)
+/services/*  /services/:splat.html  200
+/areas/*     /areas/:splat.html     200
