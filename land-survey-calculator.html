@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Land Survey Cost Calculator | Lakeland Surveying — Ocean County, NJ</title>
+<meta name="description" content="Get an instant land survey cost estimate for Ocean County, NJ. Calculate boundary, topographic, and ALTA survey costs by acreage, terrain, and flood elevation certificate needs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E2A45;
+    --ink-2:#15395C;
+    --navy-panel:#0C2339;
+    --sand:#EFE7D4;
+    --sand-2:#E6DBC1;
+    --sand-line:#D6C7A6;
+    --paper:#FBF7EE;
+    --hivis:#FF6A1A;
+    --hivis-deep:#E85A0C;
+    --white:#ffffff;
+    --muted:#5C6B7A;
+    --shadow:0 18px 40px -18px rgba(14,42,69,.45);
+    --font-display:'Archivo',system-ui,sans-serif;
+    --font-body:'Inter',system-ui,sans-serif;
+    --font-mono:'Space Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:var(--font-body);
+    color:var(--ink);
+    background:var(--sand);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+  /* ---------- Hero ---------- */
+  .hero{position:relative;overflow:hidden;background:var(--navy-panel);color:var(--paper)}
+  .hero .contours{position:absolute;inset:0;width:100%;height:100%;opacity:.5;pointer-events:none}
+  .hero-inner{position:relative;padding:54px 0 46px}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--hivis);margin:0 0 16px;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--hivis)}
+  h1{
+    font-family:var(--font-display);font-weight:800;
+    font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-.02em;
+    margin:0 0 14px;max-width:14ch;
+  }
+  .hero p{max-width:52ch;font-size:clamp(15px,2vw,18px);color:#D7E0E9;margin:0}
+  .hero .pin{
+    display:inline-flex;align-items:center;gap:8px;margin-top:22px;
+    font-family:var(--font-mono);font-size:12.5px;letter-spacing:.05em;color:#9FB4C7;
+  }
+  .hero .pin svg{width:14px;height:14px;flex:none}
+
+  /* ---------- Calculator layout ---------- */
+  .calc-section{padding:34px 0 10px;margin-top:-34px;position:relative;z-index:2}
+  .calc{
+    display:grid;grid-template-columns:1.18fr .82fr;gap:22px;align-items:start;
+  }
+  .panel{
+    background:var(--paper);border:1px solid var(--sand-line);border-radius:18px;
+    box-shadow:var(--shadow);
+  }
+  .panel-pad{padding:26px 26px 28px}
+  .panel-head{
+    display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    padding:18px 26px;border-bottom:1px solid var(--sand-line);
+  }
+  .panel-head h2{font-family:var(--font-display);font-weight:700;font-size:19px;margin:0;letter-spacing:-.01em}
+  .panel-head .step{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+  .field{margin-bottom:24px}
+  .field:last-child{margin-bottom:0}
+  .field > label, .field > .lab{
+    display:block;font-weight:600;font-size:14px;margin-bottom:10px;color:var(--ink)
+  }
+  .lab .hint{font-weight:400;color:var(--muted);font-size:12.5px;margin-left:6px}
+
+  /* zip + acreage inputs */
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .text-in{
+    width:100%;font-family:var(--font-body);font-size:16px;color:var(--ink);
+    background:var(--white);border:1.5px solid var(--sand-line);border-radius:11px;
+    padding:13px 14px;transition:border-color .15s,box-shadow .15s;
+  }
+  .text-in:focus{outline:none;border-color:var(--hivis);box-shadow:0 0 0 3px rgba(255,106,26,.18)}
+  .with-unit{position:relative}
+  .with-unit .unit{
+    position:absolute;right:14px;top:50%;transform:translateY(-50%);
+    font-family:var(--font-mono);font-size:13px;color:var(--muted);pointer-events:none
+  }
+
+  /* segmented survey type */
+  .seg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .seg button{
+    font-family:var(--font-body);font-weight:600;font-size:13.5px;cursor:pointer;
+    background:var(--white);border:1.5px solid var(--sand-line);border-radius:11px;
+    padding:12px 8px 11px;color:var(--ink-2);text-align:center;line-height:1.25;
+    transition:all .15s;
+  }
+  .seg button small{display:block;font-weight:400;font-size:11px;color:var(--muted);margin-top:3px}
+  .seg button:hover{border-color:#BFAE88}
+  .seg button[aria-pressed="true"]{
+    background:var(--ink);border-color:var(--ink);color:var(--white);
+  }
+  .seg button[aria-pressed="true"] small{color:#AFC2D4}
+  .seg button:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(255,106,26,.3)}
+
+  /* slider */
+  .slider-head{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+  .slider-head .now{font-family:var(--font-mono);color:var(--hivis-deep);font-weight:700}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:100%;height:6px;border-radius:999px;
+    background:linear-gradient(90deg,var(--hivis) 0%,var(--hivis) var(--fill,50%),var(--sand-2) var(--fill,50%),var(--sand-2) 100%);
+    cursor:pointer;margin:6px 0 4px;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:22px;height:22px;border-radius:50%;
+    background:var(--white);border:3px solid var(--hivis);box-shadow:0 2px 6px rgba(14,42,69,.3);
+  }
+  input[type=range]::-moz-range-thumb{
+    width:22px;height:22px;border:3px solid var(--hivis);background:var(--white);border-radius:50%;
+  }
+  input[type=range]:focus-visible{outline:none}
+  input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px rgba(255,106,26,.25)}
+  .ticks{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:2px}
+
+  /* toggles */
+  .toggle{
+    display:flex;align-items:center;gap:14px;padding:14px 16px;
+    border:1.5px solid var(--sand-line);border-radius:12px;background:var(--white);
+    cursor:pointer;margin-bottom:10px;transition:border-color .15s;
+  }
+  .toggle:last-child{margin-bottom:0}
+  .toggle:hover{border-color:#BFAE88}
+  .toggle.on{border-color:var(--hivis);background:#FFF6EF}
+  .switch{
+    flex:none;width:42px;height:24px;border-radius:999px;background:var(--sand-2);
+    position:relative;transition:background .18s;
+  }
+  .toggle.on .switch{background:var(--hivis)}
+  .switch::after{
+    content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .18s;
+  }
+  .toggle.on .switch::after{transform:translateX(18px)}
+  .toggle .t-txt{flex:1}
+  .toggle .t-txt strong{display:block;font-size:14px;font-weight:600}
+  .toggle .t-txt span{font-size:12.5px;color:var(--muted)}
+  .toggle .t-price{font-family:var(--font-mono);font-size:13px;color:var(--ink-2);white-space:nowrap}
+  .flood-badge{
+    font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+    background:var(--ink);color:var(--paper);padding:2px 7px;border-radius:5px;margin-left:8px;vertical-align:middle
+  }
+
+  /* ---------- Result readout ---------- */
+  .result{position:sticky;top:18px;background:var(--navy-panel);color:var(--paper);overflow:hidden}
+  .result .contours{position:absolute;inset:0;width:100%;height:100%;opacity:.4;pointer-events:none}
+  .result-inner{position:relative;padding:26px 26px 24px}
+  .result .label{
+    font-family:var(--font-mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:#8FA6BB;margin:0 0 6px;
+  }
+  .readout{
+    font-family:var(--font-mono);font-weight:700;letter-spacing:-.01em;
+    font-size:clamp(28px,4.6vw,40px);line-height:1.05;color:var(--hivis);
+    transition:opacity .18s;
+  }
+  .readout-sub{font-size:12.5px;color:#9FB4C7;margin-top:6px}
+  .ledger{margin:20px 0 4px;border-top:1px solid rgba(255,255,255,.12)}
+  .ledger .li{
+    display:flex;justify-content:space-between;gap:12px;align-items:baseline;
+    padding:10px 0;border-bottom:1px solid rgba(255,255,255,.08);font-size:13.5px;
+  }
+  .ledger .li .k{color:#C8D4DF}
+  .ledger .li .v{font-family:var(--font-mono);font-size:12.5px;color:#fff;text-align:right}
+  .ledger .li .v small{display:block;color:#8FA6BB;font-size:11px}
+  .cta{
+    display:block;width:100%;text-align:center;text-decoration:none;cursor:pointer;
+    font-family:var(--font-display);font-weight:700;font-size:15.5px;letter-spacing:.01em;
+    background:var(--hivis);color:#1A1206;border:none;border-radius:12px;
+    padding:15px;margin-top:18px;transition:background .15s,transform .05s;
+  }
+  .cta:hover{background:#FF7A2E}
+  .cta:active{transform:translateY(1px)}
+  .cta:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(255,106,26,.4)}
+  .reassure{text-align:center;font-size:11.5px;color:#8FA6BB;margin:11px 0 0}
+
+  /* ---------- Reference content ---------- */
+  .content{padding:48px 0 20px}
+  .content h2{
+    font-family:var(--font-display);font-weight:800;font-size:clamp(24px,3.4vw,32px);
+    letter-spacing:-.02em;margin:0 0 6px;
+  }
+  .content .lede{color:var(--muted);max-width:62ch;margin:0 0 26px;font-size:15.5px}
+  .factor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:42px}
+  .fcard{background:var(--paper);border:1px solid var(--sand-line);border-radius:14px;padding:20px}
+  .fcard .n{font-family:var(--font-mono);font-size:13px;color:var(--hivis-deep);font-weight:700}
+  .fcard h3{font-family:var(--font-display);font-weight:700;font-size:17px;margin:8px 0 7px}
+  .fcard p{font-size:13.5px;color:var(--ink-2);margin:0}
+
+  .table-wrap{overflow-x:auto;margin-bottom:42px;border:1px solid var(--sand-line);border-radius:14px;background:var(--paper)}
+  table{width:100%;border-collapse:collapse;min-width:480px}
+  caption{text-align:left;font-family:var(--font-display);font-weight:700;font-size:17px;padding:18px 20px 4px}
+  th,td{text-align:left;padding:13px 20px;font-size:14px;border-bottom:1px solid var(--sand-line)}
+  thead th{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--sand-2)}
+  tbody tr:last-child td{border-bottom:none}
+  td:first-child{font-weight:600}
+  .val{font-family:var(--font-mono);font-size:13px;color:var(--ink-2)}
+
+  .faq h2{margin-bottom:20px}
+  details{
+    border:1px solid var(--sand-line);border-radius:12px;background:var(--paper);
+    margin-bottom:10px;overflow:hidden;
+  }
+  details summary{
+    list-style:none;cursor:pointer;padding:16px 20px;font-weight:600;font-size:15px;
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  details summary::-webkit-details-marker{display:none}
+  details summary .chev{flex:none;width:18px;height:18px;color:var(--hivis-deep);transition:transform .2s}
+  details[open] summary .chev{transform:rotate(180deg)}
+  details .ans{padding:0 20px 18px;font-size:14px;color:var(--ink-2);max-width:70ch}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--navy-panel);color:#9FB4C7;margin-top:40px}
+  .foot-inner{padding:30px 0;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+  .foot-inner .brand{font-family:var(--font-display);font-weight:800;color:var(--paper);font-size:17px;letter-spacing:-.01em}
+  .foot-inner .brand span{color:var(--hivis)}
+  .disclaimer{font-size:11.5px;color:#75899C;max-width:60ch;line-height:1.5}
+
+  @media (max-width:860px){
+    .calc{grid-template-columns:1fr}
+    .result{position:static}
+    .factor-grid{grid-template-columns:1fr}
+    .calc-section{margin-top:-26px}
+  }
+  @media (max-width:520px){
+    .row2{grid-template-columns:1fr}
+    .seg{grid-template-columns:1fr}
+    .seg button{display:flex;align-items:baseline;gap:8px;justify-content:flex-start;text-align:left}
+    .seg button small{margin-top:0}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;scroll-behavior:auto!important}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <svg class="contours" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <g fill="none" stroke="#3A5876" stroke-width="1.3">
+      <path d="M-20,70 C200,40 420,100 640,64 C860,28 1040,90 1240,58"/>
+      <path d="M-20,120 C200,90 420,150 640,114 C860,78 1040,140 1240,108"/>
+      <path d="M-20,172 C200,142 420,202 640,166 C860,130 1040,192 1240,160"/>
+      <path d="M-20,226 C220,196 430,256 660,220 C880,186 1050,246 1240,214"/>
+      <path d="M-20,282 C220,252 430,312 660,276 C880,242 1050,302 1240,270"/>
+      <path d="M-20,340 C220,310 430,370 660,334 C880,300 1050,360 1240,328"/>
+    </g>
+    <g fill="none" stroke="#FF6A1A" stroke-width="1.4" opacity=".55">
+      <path d="M-20,198 C230,168 440,228 670,192 C900,158 1060,218 1240,186"/>
+    </g>
+  </svg>
+  <div class="wrap hero-inner">
+    <p class="eyebrow">Lakeland Surveying · Instant Estimate</p>
+    <h1>Land Survey Cost Calculator</h1>
+    <p>Get a localized price range for your property in seconds. Adjust your acreage, survey type, and terrain to see what a survey should run in Ocean County and the Jersey Shore.</p>
+    <span class="pin">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.4-7-11a7 7 0 1 1 14 0c0 4.6-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+      Calibrated for Ocean County, NJ — Toms River to Long Beach Island
+    </span>
+  </div>
+</header>
+
+<!-- ============ CALCULATOR ============ -->
+<section class="calc-section">
+  <div class="wrap">
+    <div class="calc">
+
+      <!-- INPUTS -->
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Your property</h2>
+          <span class="step">Tell us about the job</span>
+        </div>
+        <div class="panel-pad">
+
+          <div class="field">
+            <div class="row2">
+              <div>
+                <label for="zip">ZIP code</label>
+                <input class="text-in" id="zip" type="text" inputmode="numeric" maxlength="5" placeholder="e.g. 08753" value="08753">
+              </div>
+              <div>
+                <label for="acresInput">Total acreage</label>
+                <div class="with-unit">
+                  <input class="text-in" id="acresInput" type="number" min="0.1" step="0.1" value="1" aria-describedby="acreNote">
+                  <span class="unit">acres</span>
+                </div>
+              </div>
+            </div>
+            <input type="range" id="acresRange" min="0.2" max="40" step="0.2" value="1" aria-label="Acreage slider" style="margin-top:14px">
+            <div class="ticks"><span>¼ acre</span><span>10</span><span>20</span><span>40+</span></div>
+          </div>
+
+          <div class="field">
+            <span class="lab">Survey type</span>
+            <div class="seg" id="seg" role="group" aria-label="Survey type">
+              <button type="button" data-type="boundary" aria-pressed="true">Boundary<small>Standard</small></button>
+              <button type="button" data-type="topo" aria-pressed="false">Topographic<small>Elevation</small></button>
+              <button type="button" data-type="alta" aria-pressed="false">ALTA / NSPS<small>Commercial</small></button>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="lab">Terrain difficulty <span class="hint">affects field hours</span></span>
+            <div class="slider-head"><span>Flat / open</span><span class="now" id="terrainNow">Open</span><span>Wooded / hilly</span></div>
+            <input type="range" id="terrain" min="0" max="100" step="1" value="20" aria-label="Terrain difficulty">
+          </div>
+
+          <div class="field">
+            <span class="lab">Additional services</span>
+            <div class="toggle" id="tgFlood" role="checkbox" aria-checked="false" tabindex="0">
+              <span class="switch" aria-hidden="true"></span>
+              <span class="t-txt"><strong>FEMA Elevation Certificate <span class="flood-badge">Coastal</span></strong><span>Required for flood insurance & coastal permits</span></span>
+              <span class="t-price">+$600–900</span>
+            </div>
+            <div class="toggle" id="tgRush" role="checkbox" aria-checked="false" tabindex="0">
+              <span class="switch" aria-hidden="true"></span>
+              <span class="t-txt"><strong>Rush service</strong><span>Fieldwork & plat in under a week</span></span>
+              <span class="t-price">+30%</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- RESULT -->
+      <div class="panel result">
+        <svg class="contours" viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <g fill="none" stroke="#36556f" stroke-width="1.2">
+            <path d="M-20,90 C120,70 260,110 420,84"/>
+            <path d="M-20,150 C120,130 260,170 420,144"/>
+            <path d="M-20,212 C120,192 260,232 420,206"/>
+            <path d="M-20,276 C120,256 260,296 420,270"/>
+            <path d="M-20,342 C120,322 260,362 420,336"/>
+            <path d="M-20,410 C120,390 260,430 420,404"/>
+            <path d="M-20,480 C120,460 260,500 420,474"/>
+          </g>
+        </svg>
+        <div class="result-inner">
+          <p class="label">Estimated cost</p>
+          <div class="readout" id="readout" aria-live="polite">$600 – $900</div>
+          <p class="readout-sub" id="readoutSub">Boundary survey · 1 acre · open terrain</p>
+
+          <div class="ledger" id="ledger"></div>
+
+          <button class="cta" id="cta" type="button">Get my exact quote</button>
+          <p class="reassure">Free, no-obligation · Licensed NJ Professional Land Surveyor</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ REFERENCE CONTENT ============ -->
+<section class="content">
+  <div class="wrap">
+    <h2>What drives the price of a land survey</h2>
+    <p class="lede">Two things move the number more than anything else: how big the parcel is and how hard it is to walk. Everything below feeds the estimate above.</p>
+
+    <div class="factor-grid">
+      <div class="fcard">
+        <span class="n">01</span>
+        <h3>Survey type</h3>
+        <p>A boundary survey just locates your corners and lines — the most affordable option. A topographic survey also maps elevation and contours, which takes far more field time. An ALTA/NSPS survey meets strict national standards for commercial lenders and costs the most.</p>
+      </div>
+      <div class="fcard">
+        <span class="n">02</span>
+        <h3>Acreage</h3>
+        <p>Most surveyors start with a mobilization fee to research your deed and get to the site, then add a per-acre rate. Larger parcels earn a lower rate per acre, but more ground still means more hours in the field.</p>
+      </div>
+      <div class="fcard">
+        <span class="n">03</span>
+        <h3>Terrain & access</h3>
+        <p>Open lots measure quickly with GPS. Dense woods and marsh block the signal and force the crew to cut sight lines by hand. On the barrier islands, wetlands and tidal access can add a day on their own.</p>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Typical Ocean County survey ranges by size</caption>
+        <thead><tr><th>Property size</th><th>Boundary survey</th><th>Topographic survey</th></tr></thead>
+        <tbody>
+          <tr><td>Under 1 acre</td><td class="val">$500 – $850</td><td class="val">$850 – $1,400</td></tr>
+          <tr><td>1 – 5 acres</td><td class="val">$850 – $1,900</td><td class="val">$1,500 – $3,000</td></tr>
+          <tr><td>5 – 10 acres</td><td class="val">$1,700 – $2,800</td><td class="val">$2,900 – $4,400</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <caption>Common add-on services</caption>
+        <thead><tr><th>Service</th><th>Typical cost</th></tr></thead>
+        <tbody>
+          <tr><td>Corner marking</td><td class="val">Included, or +$50 / point</td></tr>
+          <tr><td>FEMA Elevation Certificate</td><td class="val">$600 – $900</td></tr>
+          <tr><td>Rush turnaround (under 1 week)</td><td class="val">+30% of survey fee</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="content faq" style="padding-top:6px">
+  <div class="wrap">
+    <h2>Land survey questions, answered</h2>
+
+    <details open>
+      <summary>When do I actually need a survey? <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="ans">Most people order one when buying or selling, building a fence, deck, or addition near a property line, splitting a lot, or settling a boundary disagreement with a neighbor. Lenders and title companies often require one before closing.</div>
+    </details>
+
+    <details>
+      <summary>What is a FEMA Elevation Certificate, and do I need one? <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="ans">It's a document that records your structure's elevation against the base flood level. Along the Ocean County coast it's often what sets your flood insurance premium and is required for many building and rebuild permits in flood zones. If your property is anywhere near the water, it's worth asking about up front.</div>
+    </details>
+
+    <details>
+      <summary>What's the difference between boundary and topographic? <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="ans">A boundary survey answers "where are my lines and corners." A topographic survey adds the shape of the land — elevation, slope, and contours — which architects and engineers need to design drainage, foundations, and driveways. Topo work takes more time in the field, so it costs more.</div>
+    </details>
+
+    <details>
+      <summary>Does a survey expire? <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="ans">A survey captures the land on a specific date, so it doesn't expire like a license. For your own records an older one is usually fine if nothing has changed. For a closing or permit, title companies typically want one that's recent — often within the last year.</div>
+    </details>
+
+    <details>
+      <summary>Will the surveyor find my existing property pins? <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="ans">Usually, yes. Crews use metal detectors to locate iron rods set at the corners. If any are missing or disturbed, they set new ones — typically capped rebar — so your corners are marked again.</div>
+    </details>
+
+    <details>
+      <summary>My neighbor's fence looks like it's on my land — can a survey help? <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="ans">A survey will confirm exactly where the line falls and whether there's an encroachment. From there you have a record you can use to talk it through with your neighbor or take to an attorney if needed.</div>
+    </details>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap foot-inner">
+    <div class="brand">Lakeland<span>·</span>Surveying</div>
+    <p class="disclaimer">Estimates are for planning only and are not a formal quote. Final pricing depends on site conditions, records research, and scope, and is confirmed by a licensed New Jersey Professional Land Surveyor after review.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---- pricing model (NJ / Ocean County calibration) ----
+  var BASE = {low:450, high:650};
+  // tiered per-acre rates: [0-5], [5-20], [20+]
+  var TIERS = [
+    {cap:5,  low:150, high:220},
+    {cap:20, low:95,  high:165},
+    {cap:Infinity, low:70, high:120}
+  ];
+  var TYPE = {
+    boundary:{factor:1.00, baseAdd:0,   label:"Boundary survey"},
+    topo:    {factor:1.60, baseAdd:150, label:"Topographic survey"},
+    alta:    {factor:2.60, baseAdd:800, label:"ALTA / NSPS survey"}
+  };
+  var FLOOD = {low:600, high:900};
+  var RUSH = 0.30;
+
+  var state = {acres:1, type:"boundary", terrain:20, flood:false, rush:false};
+
+  function acreageCost(acres, key){
+    var remaining = acres, cost = 0, prevCap = 0;
+    for(var i=0;i<TIERS.length;i++){
+      var span = TIERS[i].cap - prevCap;
+      var used = Math.min(remaining, span);
+      if(used <= 0) break;
+      cost += used * TIERS[i][key];
+      remaining -= used;
+      prevCap = TIERS[i].cap;
+    }
+    return cost;
+  }
+
+  function terrainFactor(t){ return 1 + (t/100)*0.60; } // 1.0 .. 1.6
+
+  function round25(v){ return Math.round(v/25)*25; }
+  function money(v){ return "$" + Math.round(v).toLocaleString("en-US"); }
+
+  function compute(){
+    var t = TYPE[state.type];
+    var tf = terrainFactor(state.terrain);
+
+    function side(key, floodVal){
+      var sub = (BASE[key] + acreageCost(state.acres, key));
+      sub = sub * t.factor + t.baseAdd;
+      sub = sub * tf;
+      if(state.rush) sub *= (1 + RUSH);
+      if(state.flood) sub += floodVal;
+      return sub;
+    }
+    var low  = round25(side("low",  FLOOD.low));
+    var high = round25(side("high", FLOOD.high));
+    return {low:low, high:high, tf:tf, type:t};
+  }
+
+  // ---- render ----
+  var readout = document.getElementById("readout");
+  var readoutSub = document.getElementById("readoutSub");
+  var ledger = document.getElementById("ledger");
+  var terrainNow = document.getElementById("terrainNow");
+
+  function terrainWord(t){
+    if(t < 20) return "Open";
+    if(t < 45) return "Light brush";
+    if(t < 70) return "Wooded";
+    if(t < 90) return "Heavy woods";
+    return "Hilly / wetland";
+  }
+
+  function acresLabel(a){
+    if(a === 1) return "1 acre";
+    if(a < 1) return a + " acre";
+    return a + " acres";
+  }
+
+  function render(){
+    var r = compute();
+
+    // animated swap
+    readout.style.opacity = "0";
+    setTimeout(function(){
+      readout.textContent = money(r.low) + "  –  " + money(r.high);
+      readout.style.opacity = "1";
+    }, 90);
+
+    var bits = [r.type.label, acresLabel(state.acres), terrainWord(state.terrain).toLowerCase() + " terrain"];
+    readoutSub.textContent = bits.join(" · ");
+
+    // ledger
+    var rows = [];
+    rows.push(["Mobilization & records", money(BASE.low) + "–" + money(BASE.high)]);
+    rows.push([acresLabel(state.acres) + " of fieldwork", money(round25(acreageCost(state.acres,"low"))) + "–" + money(round25(acreageCost(state.acres,"high")))]);
+    rows.push([r.type.label.replace(" survey",""), "×" + r.type.factor.toFixed(2)]);
+    rows.push(["Terrain", "×" + r.tf.toFixed(2)]);
+    if(state.rush) rows.push(["Rush service", "+30%"]);
+    if(state.flood) rows.push(["FEMA Elevation Certificate", money(FLOOD.low) + "–" + money(FLOOD.high)]);
+
+    ledger.innerHTML = rows.map(function(row){
+      return '<div class="li"><span class="k">'+row[0]+'</span><span class="v">'+row[1]+'</span></div>';
+    }).join("");
+
+    // slider fill
+    var rng = document.getElementById("terrain");
+    rng.style.setProperty("--fill", state.terrain + "%");
+    var arng = document.getElementById("acresRange");
+    var pct = ((arng.value - arng.min) / (arng.max - arng.min)) * 100;
+    arng.style.setProperty("--fill", pct + "%");
+
+    terrainNow.textContent = terrainWord(state.terrain);
+  }
+
+  // ---- wire inputs ----
+  var acresInput = document.getElementById("acresInput");
+  var acresRange = document.getElementById("acresRange");
+
+  function setAcres(v){
+    v = parseFloat(v);
+    if(isNaN(v) || v < 0.1) v = 0.1;
+    if(v > 200) v = 200;
+    state.acres = Math.round(v*10)/10;
+    render();
+  }
+  acresInput.addEventListener("input", function(){
+    setAcres(this.value);
+    var rv = Math.min(Math.max(state.acres, acresRange.min), acresRange.max);
+    acresRange.value = rv;
+    render();
+  });
+  acresRange.addEventListener("input", function(){
+    state.acres = parseFloat(this.value);
+    acresInput.value = state.acres;
+    render();
+  });
+
+  document.getElementById("seg").addEventListener("click", function(e){
+    var btn = e.target.closest("button");
+    if(!btn) return;
+    state.type = btn.dataset.type;
+    this.querySelectorAll("button").forEach(function(b){
+      b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+    });
+    render();
+  });
+
+  document.getElementById("terrain").addEventListener("input", function(){
+    state.terrain = parseInt(this.value, 10);
+    render();
+  });
+
+  function bindToggle(id, key){
+    var el = document.getElementById(id);
+    function flip(){
+      state[key] = !state[key];
+      el.classList.toggle("on", state[key]);
+      el.setAttribute("aria-checked", state[key] ? "true" : "false");
+      render();
+    }
+    el.addEventListener("click", flip);
+    el.addEventListener("keydown", function(e){
+      if(e.key === " " || e.key === "Enter"){ e.preventDefault(); flip(); }
+    });
+  }
+  bindToggle("tgFlood", "flood");
+  bindToggle("tgRush", "rush");
+
+  document.getElementById("cta").addEventListener("click", function(){
+    // TODO: point this at the real lead form / phone for Lakeland Surveying
+    document.querySelector(".hero").scrollIntoView({behavior:"smooth"});
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
