@@ -1,10 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-08X10CKB5T"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-08X10CKB5T');
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Land Survey Cost Calculator | Lakeland Surveying — Ocean County, NJ</title>
 <meta name="description" content="Get an instant land survey cost estimate for Ocean County, NJ. Calculate boundary, topographic, and ALTA survey costs by acreage, terrain, and flood elevation certificate needs.">
+<link rel="canonical" href="https://landsurveyingoceancountynj.com/land-survey-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Land Survey Cost Calculator | Lakeland Surveying — Ocean County, NJ">
+<meta property="og:description" content="Get an instant land survey cost estimate for Ocean County, NJ. Calculate boundary, topographic, and ALTA survey costs by acreage, terrain, and flood elevation certificate needs.">
+<meta property="og:url" content="https://landsurveyingoceancountynj.com/land-survey-calculator.html">
+<meta property="og:image" content="https://landsurveyingoceancountynj.com/og.jpg">
+<meta property="og:site_name" content="Lakeland Surveying, Inc.">
+<meta name="theme-color" content="#071a2c">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -637,8 +660,14 @@
   bindToggle("tgRush", "rush");
 
   document.getElementById("cta").addEventListener("click", function(){
-    // TODO: point this at the real lead form / phone for Lakeland Surveying
-    document.querySelector(".hero").scrollIntoView({behavior:"smooth"});
+    if (typeof gtag === "function") {
+      gtag("event", "generate_lead", {
+        event_category: "calculator",
+        event_label: TYPE[state.type].label,
+        value: state.acres
+      });
+    }
+    window.location.href = "contact.html";
   });
 
   render();
