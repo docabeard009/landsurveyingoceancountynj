@@ -19,4 +19,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://lakelandsurveying.com/sitemap.xml
+Sitemap: https://landsurveyingoceancountynj.com/sitemap.xml

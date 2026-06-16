@@ -1,0 +1,30 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="round"><rect x="0" y="0" width="512" height="512" rx="104" ry="104"/></clipPath>
+  </defs>
+  <g clip-path="url(#round)">
+    <!-- ocean navy field -->
+    <rect x="0" y="0" width="512" height="512" fill="#0B2A45"/>
+    <!-- topographic contour lines, warm sand, subtle -->
+    <g fill="none" stroke="#F3EEE4" stroke-opacity="0.10" stroke-width="10">
+      <path d="M -40 360 q 140 -70 300 -10 t 320 -20"/>
+      <path d="M -40 410 q 140 -70 300 -10 t 320 -20"/>
+      <path d="M -40 460 q 140 -70 300 -10 t 320 -20"/>
+    </g>
+    <!-- survey set-square "L" (right angle) in warm sand -->
+    <g fill="#F3EEE4">
+      <rect x="150" y="120" width="58" height="248"/>
+      <rect x="150" y="310" width="230" height="58"/>
+    </g>
+    <!-- ruler tick marks cut into inner vertical edge -->
+    <g fill="#0B2A45">
+      <rect x="208" y="150" width="20" height="9"/>
+      <rect x="208" y="186" width="20" height="9"/>
+      <rect x="208" y="222" width="20" height="9"/>
+      <rect x="208" y="258" width="20" height="9"/>
+      <rect x="208" y="294" width="20" height="9"/>
+    </g>
+    <!-- hi-vis field orange survey benchmark -->
+    <path d="M 322 322 l 46 0 l -23 40 z" fill="#E2731B"/>
+  </g>
+</svg>
