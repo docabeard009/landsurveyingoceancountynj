@@ -380,3 +380,14 @@ footer a:hover{color:#fff}
   .mobile-open .drop.cols{grid-template-columns:1fr}
   .mobile-open .nav-tel{display:flex}
 }
+
+/* Service-area mega-menu (FOUND) */
+.drop.mega{display:grid;grid-template-columns:1fr;gap:12px;min-width:min(680px,94vw);max-height:80vh;overflow:auto;padding:14px}
+.drop.mega .grp h5{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 8px 7px;font-family:var(--mono);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--brass)}
+.drop.mega .grp h5 .all{font-weight:600;font-size:11px;color:var(--water);white-space:nowrap}
+.drop.mega .towns{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;list-style:none;margin:0;padding:0}
+.drop.mega .towns a{padding:7px 8px;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:640px){
+  .mobile-open .drop.mega{min-width:0;max-height:none;overflow:visible;padding:4px 0 10px 14px;gap:10px}
+  .mobile-open .drop.mega .towns{grid-template-columns:1fr 1fr}
+}
