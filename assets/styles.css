@@ -85,7 +85,8 @@ p{margin:0 0 1rem}
   min-height:38px;flex-wrap:wrap;gap:6px}
 .topbar a{color:var(--water-soft)}
 .topbar a:hover{color:#fff}
-.topbar .tb-r{display:flex;gap:22px;align-items:center}
+.topbar .tb-r{display:flex;gap:22px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.topbar .sms-note{text-align:right;margin-top:3px;opacity:.72}
 
 header.nav{position:sticky;top:0;z-index:60;background:rgba(251,250,246,.86);
   backdrop-filter:saturate(160%) blur(12px);border-bottom:1px solid var(--line)}
@@ -280,6 +281,11 @@ footer a:hover{color:#fff}
 .foot-brand p{margin:18px 0 0;max-width:34ch;color:#8aa4b6}
 .office{font-family:var(--mono);font-size:12.5px;color:#bcd0dd;line-height:1.7;margin-bottom:16px}
 .office b{color:#fff;display:block;letter-spacing:.06em;margin-bottom:4px}
+/* SMS quick-response note shown under each phone-number call-to-action */
+.sms-note{display:block;flex-basis:100%;width:100%;order:99;
+  font-family:var(--mono);font-size:11.5px;font-weight:500;letter-spacing:.01em;
+  line-height:1.35;color:inherit;opacity:.82;margin-top:6px}
+.sms-note a{color:inherit;text-decoration:underline;text-underline-offset:2px;opacity:1}
 .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;
   font-family:var(--mono);font-size:12px;color:#6f8aa0;flex-wrap:wrap;gap:12px}
 .foot-bottom a{color:#8aa4b6;display:inline}
