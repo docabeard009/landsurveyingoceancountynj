@@ -1,1 +1,9 @@
-
+{
+  "name": "lakeland-surveying-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static site + AI chat function for Lakeland Surveying",
+  "dependencies": {
+    "@netlify/blobs": "^10.7.0"
+  }
+}
