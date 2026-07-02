@@ -32,7 +32,7 @@ async function logQuestion(q) {
 /* ---- Core facts: always included, hand-set (rarely change). ---- */
 const CORE_FACTS = `
 BUSINESS: Lakeland Surveying, Inc. — a licensed New Jersey land surveying firm, 50+ years in business (since 1972). Shore office in Lavallette, NJ. Robotic total stations + GPS.
-SERVICE AREA: All of Ocean County and Monmouth County, NJ — barrier-island shore towns (Lavallette, Ortley Beach, Seaside, Bay Head, Mantoloking, Point Pleasant, all of Long Beach Island) plus the mainland (Toms River, Brick, Stafford, etc.).
+SERVICE AREA: Nine New Jersey counties, town by town — Ocean, Monmouth, Atlantic, Cape May, Cumberland, Salem, Gloucester, Camden and Burlington. Coverage runs from the barrier-island shore (Lavallette, Long Beach Island, Seaside, the Wildwoods, Ocean City, Atlantic City, Cape May) to the bayfront and Delaware River towns, and the inland/Pinelands mainland (Toms River, Cherry Hill, Vineland, Mount Laurel, Washington Township, etc.). Based in the Lavallette shore office; available across all 21 NJ counties.
 CONTACT: Phone (609) 201-4717. Text 917.463.6042. Free quotes. Hours Mon-Fri 8am-5pm; messages returned promptly.
 `;
 
