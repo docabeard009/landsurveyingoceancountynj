@@ -259,7 +259,7 @@ section{padding:96px 0}
 /* CTA band */
 .cta-band{background:var(--signal);color:#fff;border-radius:22px;padding:56px;
   display:grid;grid-template-columns:1.3fr .7fr;gap:40px;align-items:center;position:relative;overflow:hidden}
-.cta-band::after{content:"";position:absolute;inset:0;
+.cta-band::after{content:"";position:absolute;inset:0;pointer-events:none;
   background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);
   background-size:34px 34px;mask-image:radial-gradient(80% 120% at 88% 50%,#000,transparent 70%)}
 .cta-band h2{color:#fff;font-size:clamp(28px,3.5vw,40px);margin:0 0 12px;position:relative}
