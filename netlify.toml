@@ -1,1 +1,5 @@
-
+# Netlify config for Lakeland Surveying
+# Functions live in netlify/functions and are reachable at /.netlify/functions/<name>
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
