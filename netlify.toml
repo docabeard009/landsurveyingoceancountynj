@@ -1,5 +1,11 @@
 # Netlify config for Lakeland Surveying
-# Functions live in netlify/functions and are reachable at /.netlify/functions/<name>
+
+# Rebuilds the chatbot's page index from your live HTML on every deploy,
+# so the bot auto-learns new/edited pages. Read-only; never edits your pages.
+[build]
+  command = "node scripts/build-knowledge.mjs"
+
+# The AI backend + insights functions
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
