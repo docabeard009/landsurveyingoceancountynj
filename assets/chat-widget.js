@@ -19,8 +19,8 @@
     endpoint: "/.netlify/functions/chat"
   };
 
-  var GREETING = "Hi — I'm Lakeland's assistant. I can help you figure out which survey you need, check if we cover your town, or start a quote. What's going on with your property?";
-  var CHIPS = ["Do I need an elevation certificate?","What's a boundary survey?","Do you cover my town?","Get a quote"];
+  var GREETING = "Hi — I'm Lakeland's live assistant. I can help you figure out which survey you need, answer any specific questions you may have, or start a quote. What's going on with your property?";
+  var CHIPS = ["Do I need an elevation certificate?","What's a boundary survey?","Do you help with realestate or construction surveys?","Get a quote"];
 
   var CSS = `
   .lk-fab{position:fixed;right:20px;bottom:20px;z-index:2147483000;display:inline-flex;align-items:center;gap:10px;cursor:pointer;background:#E2731B;color:#fff;border:none;border-radius:999px;padding:14px 20px 14px 16px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:13px;letter-spacing:.04em;font-weight:500;box-shadow:0 18px 40px -18px rgba(196,95,18,.75);transition:transform .18s ease, box-shadow .18s ease}
