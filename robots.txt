@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /reviews/
 
 # AI / answer-engine crawlers — explicitly welcomed
 User-agent: GPTBot
