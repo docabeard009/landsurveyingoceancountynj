@@ -23,8 +23,15 @@ const DEFAULTS = {
   business:   "Lakeland Surveying",
   short:      "Lakeland",
   googleUrl:  "https://g.page/r/Cb1KRMDEA-YUEAI/review",
-  yelpUrl:    "",   // paste the Yelp "Write a Review" URL, or add it in Setup
+  yelpUrl:    "https://www.yelp.com/writeareview/biz/LvQ1CQridhajSuJKO7Vo5g",
   signature:  "Jack"
+};
+
+// Activity reporting -> the FOUND portal. Set logUrl to "" to turn it off entirely.
+// NOTE: phone numbers and emails are NEVER sent. Names are truncated to "First L." first.
+const REPORTING = {
+  logUrl: "/.netlify/functions/review-log",
+  client: "lakeland"
 };
 </script>
 
@@ -224,8 +231,18 @@ const DEFAULTS = {
   .note li{ margin-bottom:3px; }
 
   /* ---------- bottom nav ---------- */
+  /* The site's AI chat widget is injected into EVERY page by Netlify Snippet
+     Injection, including this one. Its FAB is fixed at bottom-right with
+     z-index 2147483000 and sits on top of the nav. This tool is Jack's
+     internal app — the customer-facing chatbot has no business being here. */
+  .lk-fab, .lk-panel, #lk-typing{
+    display:none !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+
   nav{
-    position:fixed; bottom:0; left:0; right:0; z-index:45;
+    position:fixed; bottom:0; left:0; right:0; z-index:2147483001;
     background:#fff; border-top:1px solid var(--line);
     display:flex; padding-bottom:env(safe-area-inset-bottom);
   }
@@ -684,7 +701,20 @@ let cust = load(K.cust, []);
 let qrPlatform = 'google';
 let deferredPrompt = null;
 
-function load(k, fb){ try { const v = localStorage.getItem(k); return v ? {...fb, ...JSON.parse(v)} : fb; } catch(e){ return fb; } }
+function load(k, fb){
+  try {
+    const v = localStorage.getItem(k);
+    if (!v) return fb;
+    const saved = JSON.parse(v);
+    // Drop empty values so a blank saved field falls back to the built-in default.
+    // Without this, tapping "Save settings" with an empty box would permanently
+    // shadow a link that later gets shipped in the code.
+    for (const key of Object.keys(saved)) {
+      if (saved[key] === "" || saved[key] == null) delete saved[key];
+    }
+    return {...fb, ...saved};
+  } catch(e){ return fb; }
+}
 function loadArr(k){ try { return JSON.parse(localStorage.getItem(k)) || []; } catch(e){ return []; } }
 function save(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){ toast("Storage full — export a backup"); } }
 
@@ -850,6 +880,7 @@ function landed(id){
   const c = cust.find(x => x.id === id);
   c.landed = c.landed ? 0 : Date.now();
   save(K.cust, cust);
+  if (c.landed) report('landed', c, { platform: 'google' });
   render();
   toast(c.landed ? "Nice — review landed" : "Unmarked");
 }
@@ -919,6 +950,7 @@ function fire(id, how){
 
   c.sent = Date.now();
   save(K.cust, cust);
+  report('sent', c, { platform: sendPlatform, channel: how === 'sms' ? 'sms' : 'email' });
   closeSheet();
   render();
 }
@@ -1058,11 +1090,78 @@ if (isIOS && !standalone && !localStorage.getItem(K.dis)){
   document.getElementById('installIOS').style.display = 'block';
 }
 
+/* ---------- activity reporting (portal) ---------- */
+/* Fire-and-forget. Queued on device if offline, flushed when signal returns.
+   Sends NO phone numbers and NO email addresses — ever. */
+const QK = 'frt.queue';
+
+function shortName(full){
+  const p = String(full || '').trim().split(/\s+/);
+  if (!p[0]) return '';
+  return p.length > 1 ? p[0] + ' ' + p[p.length-1][0].toUpperCase() + '.' : p[0];
+}
+
+function report(ev, c, extra){
+  if (!REPORTING.logUrl) return;
+  const e = {
+    ev,
+    client:   REPORTING.client,
+    who:      shortName(c.name),
+    town:     c.town || '',
+    service:  c.service || '',
+    platform: (extra && extra.platform) || 'google',
+    channel:  (extra && extra.channel)  || '',
+    at:       Date.now()
+  };
+  let q = [];
+  try { q = JSON.parse(localStorage.getItem(QK) || '[]'); } catch(_){}
+  q.push(e);
+  try { localStorage.setItem(QK, JSON.stringify(q.slice(-200))); } catch(_){}
+  flushQueue();
+}
+
+let flushing = false;
+async function flushQueue(){
+  if (flushing || !REPORTING.logUrl || !navigator.onLine) return;
+  let q = [];
+  try { q = JSON.parse(localStorage.getItem(QK) || '[]'); } catch(_){ return; }
+  if (!q.length) return;
+  flushing = true;
+  try {
+    const res = await fetch(REPORTING.logUrl, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ events: q.slice(0, 50) })
+    });
+    if (res.ok) {
+      const rest = q.slice(50);
+      localStorage.setItem(QK, JSON.stringify(rest));
+      flushing = false;
+      if (rest.length) return flushQueue();
+      return;
+    }
+  } catch(_){ /* offline or down — keep the queue, try again later */ }
+  flushing = false;
+}
+window.addEventListener('online', flushQueue);
+
+/* ---------- evict the site-wide chat widget ---------- */
+/* Netlify Snippet Injection puts chat-widget.js on every page of the site,
+   this one included. CSS hides it; this rips it out so it can't steal taps.
+   Runs on load and keeps watching, because the widget installs itself async. */
+function evictChatWidget(){
+  document.querySelectorAll('.lk-fab, .lk-panel, #lk-typing').forEach(el => el.remove());
+}
+evictChatWidget();
+new MutationObserver(evictChatWidget).observe(document.documentElement, { childList:true, subtree:true });
+window.addEventListener('load', evictChatWidget);
+
 /* ---------- boot ---------- */
 paintConfig();
 paintTemplates();
 render();
 renderQR();
+flushQueue();
 
 if ('serviceWorker' in navigator){
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
