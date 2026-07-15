@@ -20,7 +20,7 @@ export default {
   assistants: {
     perplexity: { enabled: true, model: 'sonar' },
     openai: { enabled: true, model: 'gpt-5.5' },
-    gemini: { enabled: true, model: 'gemini-2.5-flash' },
+    gemini: { enabled: true, model: 'gemini-flash-latest' },
     claude: { enabled: true, model: 'claude-sonnet-5' },
   },
 
