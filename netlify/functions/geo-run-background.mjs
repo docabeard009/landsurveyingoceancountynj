@@ -1,8 +1,8 @@
 // netlify/functions/geo-run-background.mjs
 // Background function (up to 15 min). Trigger:
-//   POST /.netlify/functions/geo-run-background?client=lakeland&key=YOUR_KEY
-// Returns 202 immediately, then runs the full sweep and writes results to
-// Netlify Blobs. Check progress/results on the dashboard.
+//   /.netlify/functions/geo-run-background?client=lakeland&key=YOUR_KEY
+// Runs the full sweep to completion, logging progress, then writes results to
+// Netlify Blobs. View results on the dashboard.
 
 import { getStore } from '@netlify/blobs';
 import { getClient } from '../../geo/clients/index.mjs';
@@ -11,7 +11,6 @@ import { evaluateAnswer, aggregate } from '../../geo/lib/score.mjs';
 
 const CONCURRENCY = 4; // queries processed in parallel; each fans out to N assistants
 
-// Bounded-concurrency map.
 async function pool(items, limit, fn) {
   const out = new Array(items.length);
   let i = 0;
@@ -31,10 +30,14 @@ export default async (req) => {
   const key = url.searchParams.get('key') || '';
 
   if (!process.env.GEO_KEY || key !== process.env.GEO_KEY) {
+    console.log('geo-run: unauthorized (key mismatch)');
     return new Response('unauthorized', { status: 401 });
   }
   const config = getClient(slug);
-  if (!config) return new Response(`unknown client: ${slug}`, { status: 404 });
+  if (!config) {
+    console.log(`geo-run: unknown client ${slug}`);
+    return new Response(`unknown client: ${slug}`, { status: 404 });
+  }
 
   const store = getStore('geo');
   const startedAt = new Date().toISOString();
@@ -43,36 +46,37 @@ export default async (req) => {
     (a) => config.assistants[a]?.enabled !== false && ADAPTERS[a]
   );
 
-  // Flatten clusters into a query list.
   const queries = [];
   for (const cluster of config.clusters) {
     for (const q of cluster.queries) queries.push({ clusterId: cluster.id, query: q });
   }
 
-  await store.setJSON(`${slug}/status`, {
-    state: 'running',
-    startedAt,
-    total: queries.length,
-    assistants: enabled,
-  });
+  console.log(`geo-run: start slug=${slug} queries=${queries.length} assistants=${enabled.join(',') || 'NONE'}`);
 
-  // Kick off the sweep but don't block the 202 response.
-  runSweep().catch(async (e) => {
-    await store.setJSON(`${slug}/status`, { state: 'error', startedAt, error: String(e) });
-  });
+  if (!enabled.length) {
+    await store.setJSON(`${slug}/status`, { state: 'error', startedAt, error: 'no assistants enabled or no adapters' });
+    return new Response('no assistants enabled', { status: 400 });
+  }
 
-  async function runSweep() {
+  await store.setJSON(`${slug}/status`, { state: 'running', startedAt, total: queries.length, assistants: enabled });
+
+  try {
+    let done = 0;
     const rows = await pool(queries, CONCURRENCY, async ({ clusterId, query }) => {
       const answers = await Promise.all(
         enabled.map(async (a) => {
           try {
             const raw = await ADAPTERS[a](query, config.assistants[a]);
+            if (!raw.ok) console.log(`geo-run: ${a} error on "${query}": ${raw.error}`);
             return [a, evaluateAnswer(raw, config)];
           } catch (e) {
+            console.log(`geo-run: ${a} threw on "${query}": ${e}`);
             return [a, { ok: false, error: String(e), surfaced: false, competitorsCited: [] }];
           }
         })
       );
+      done++;
+      console.log(`geo-run: [${done}/${queries.length}] ${query}`);
       return { clusterId, query, results: Object.fromEntries(answers) };
     });
 
@@ -83,18 +87,19 @@ export default async (req) => {
     await store.setJSON(`${slug}/runs/${startedAt}`, run);
     await store.setJSON(`${slug}/latest`, run);
     await store.setJSON(`${slug}/status`, {
-      state: 'done',
-      startedAt,
-      finishedAt,
-      total: queries.length,
+      state: 'done', startedAt, finishedAt, total: queries.length,
       overallSurfacedPct: summary.overallSurfacedPct,
     });
-  }
 
-  return new Response(JSON.stringify({ accepted: true, slug, queries: queries.length, assistants: enabled }), {
-    status: 202,
-    headers: { 'content-type': 'application/json' },
-  });
+    console.log(`geo-run: DONE overall=${summary.overallSurfacedPct}% gaps=${summary.gaps.length}`);
+    return new Response(JSON.stringify({ ok: true, slug, queries: queries.length, overallSurfacedPct: summary.overallSurfacedPct }), {
+      status: 200, headers: { 'content-type': 'application/json' },
+    });
+  } catch (e) {
+    console.log(`geo-run: FAILED ${e && e.stack ? e.stack : e}`);
+    await store.setJSON(`${slug}/status`, { state: 'error', startedAt, error: String(e) });
+    return new Response(`error: ${e}`, { status: 500 });
+  }
 };
 
 function publicConfig(c) {
