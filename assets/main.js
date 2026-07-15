@@ -41,20 +41,38 @@ if ('IntersectionObserver' in window) {
   revealAll();
 }
 
-// Track text-button (sms:) and call-button (tel:) taps in GA4.
-// These links never hit the server and GA's enhanced measurement ignores
-// sms:/tel:, so without this they're invisible. Fires a custom event per tap.
+// Track text-button (sms:) and call-button (tel:) taps.
+// These links never hit the server and GA ignores sms:/tel:, so without
+// this they're invisible. Each tap fires a GA event AND a first-party
+// log to /.netlify/functions/click-log (viewable in the Tap Insights
+// dashboard). sendBeacon is used because the tap navigates away to the
+// Messages/Phone app — it still delivers reliably as the page unloads.
 (function () {
-  function send(name, a) {
-    if (typeof gtag !== 'function') return;
-    gtag('event', name, {
-      link_url: a.getAttribute('href') || '',
-      link_text: (a.textContent || '').trim(),
-      page_path: location.pathname
-    });
+  function record(type, a) {
+    var num = (a.textContent || "").trim();
+    // 1) GA4 custom event
+    if (typeof gtag === "function") {
+      gtag("event", type === "sms" ? "sms_click" : "call_click", {
+        link_url: a.getAttribute("href") || "",
+        link_text: num,
+        page_path: location.pathname
+      });
+    }
+    // 2) First-party log to Netlify Blobs
+    try {
+      var payload = JSON.stringify({ events: [{ type: type, path: location.pathname, num: num, at: Date.now() }] });
+      var url = "/.netlify/functions/click-log";
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(url, new Blob([payload], { type: "application/json" }));
+      } else {
+        fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: payload, keepalive: true });
+      }
+    } catch (e) { /* never block the tap */ }
   }
-  document.querySelectorAll('a[href^="sms:"]').forEach(a =>
-    a.addEventListener('click', () => send('sms_click', a)));
-  document.querySelectorAll('a[href^="tel:"]').forEach(a =>
-    a.addEventListener('click', () => send('call_click', a)));
+  document.querySelectorAll('a[href^="sms:"]').forEach(function (a) {
+    a.addEventListener("click", function () { record("sms", a); });
+  });
+  document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+    a.addEventListener("click", function () { record("call", a); });
+  });
 })();
