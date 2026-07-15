@@ -40,3 +40,21 @@ if ('IntersectionObserver' in window) {
 } else {
   revealAll();
 }
+
+// Track text-button (sms:) and call-button (tel:) taps in GA4.
+// These links never hit the server and GA's enhanced measurement ignores
+// sms:/tel:, so without this they're invisible. Fires a custom event per tap.
+(function () {
+  function send(name, a) {
+    if (typeof gtag !== 'function') return;
+    gtag('event', name, {
+      link_url: a.getAttribute('href') || '',
+      link_text: (a.textContent || '').trim(),
+      page_path: location.pathname
+    });
+  }
+  document.querySelectorAll('a[href^="sms:"]').forEach(a =>
+    a.addEventListener('click', () => send('sms_click', a)));
+  document.querySelectorAll('a[href^="tel:"]').forEach(a =>
+    a.addEventListener('click', () => send('call_click', a)));
+})();
