@@ -11,8 +11,8 @@
 
   var BIZ = {
     name: "Lakeland Surveying",
-    tel: "917.463.6042",
-    telDisplay: "917.463.6042",
+    tel: "609.201.4717",
+    telDisplay: "609.201.4717",
     sms: "+19174636042",
     smsDisplay: "917.463.6042",
     formspree: "https://formspree.io/f/xnjywovb",

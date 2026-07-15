@@ -33,7 +33,7 @@ async function logQuestion(q) {
 const CORE_FACTS = `
 BUSINESS: Lakeland Surveying, Inc. — a licensed New Jersey land surveying firm, 50+ years in business (since 1972). Shore office in Lavallette, NJ. Robotic total stations + GPS.
 SERVICE AREA: Nine New Jersey counties, town by town — Ocean, Monmouth, Atlantic, Cape May, Cumberland, Salem, Gloucester, Camden and Burlington. Coverage runs from the barrier-island shore (Lavallette, Long Beach Island, Seaside, the Wildwoods, Ocean City, Atlantic City, Cape May) to the bayfront and Delaware River towns, and the inland/Pinelands mainland (Toms River, Cherry Hill, Vineland, Mount Laurel, Washington Township, etc.). Based in the Lavallette shore office; available across all 21 NJ counties.
-CONTACT: Phone 917.463.6042. Text 917.463.6042. Free quotes. Hours Mon-Fri 8am-5pm; messages returned promptly.
+CONTACT: Phone 609.201.4717. Text 609.201.4717. Free quotes. Hours Mon-Fri 8am-5pm; messages returned promptly.
 `;
 
 const GUARDRAILS = `STRICT RULES:
@@ -43,7 +43,7 @@ const GUARDRAILS = `STRICT RULES:
 - NEVER determine a property's flood zone, base flood elevation, or LOMA eligibility. Explain it needs a surveyed elevation, then point to a call or quote.
 - NEVER quote a specific price or guarantee a turnaround. Say pricing is per-property and turnaround depends on the job; invite a quote or call.
 - If asked something outside land surveying or not in the content, politely redirect to how Lakeland can help.
-- Make it easy to act: mention calling 917.463.6042, texting 917.463.6042, or requesting a quote when it fits.`;
+- Make it easy to act: mention calling 609.201.4717, texting 609.201.4717, or requesting a quote when it fits.`;
 
 /* ---- Always-on catalog: every page title so the bot knows what exists. ---- */
 const CATALOG = (KNOWLEDGE || []).map(p => `- ${p.title || p.slug} (${p.slug})`).join("\n");
@@ -135,7 +135,7 @@ const PROVIDERS = {
   }
 };
 
-const FALLBACK = "Sorry — I hit a snag. Please call us at 917.463.6042 or text 917.463.6042 and we'll help you right away.";
+const FALLBACK = "Sorry — I hit a snag. Please call us at 609.201.4717 or text 609.201.4717 and we'll help you right away.";
 
 export default async (request) => {
   const cors = { "access-control-allow-origin": "*", "access-control-allow-methods": "POST, OPTIONS", "access-control-allow-headers": "content-type" };
