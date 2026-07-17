@@ -10,7 +10,7 @@
    detail is ever captured — those never leave the visitor's device.
 
    POST /.netlify/functions/click-log
-   Body: { "events": [ { "type":"sms|call", "path":"/toms-river", "num":"609.201.4717", "at":1699999999999 } ] }
+   Body: { "events": [ { "type":"sms|call", "path":"/toms-river", "num":"917.463.6042", "at":1699999999999 } ] }
    ===================================================================== */
 import { getStore } from "@netlify/blobs";
 
