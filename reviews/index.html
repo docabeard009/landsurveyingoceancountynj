@@ -23,8 +23,7 @@ const DEFAULTS = {
   business:   "Lakeland Surveying",
   short:      "Lakeland",
   googleUrl:  "https://share.google/4cUMTvVXyc93Th42U",
-  yelpUrl:    "https://www.yelp.com/writeareview/biz/LvQ1CQridhajSuJKO7Vo5g",
-  signature:  "Jack"
+  yelpUrl:    "https://www.yelp.com/writeareview/biz/LvQ1CQridhajSuJKO7Vo5g"
 };
 
 // Activity reporting -> the FOUND portal. Set logUrl to "" to turn it off entirely.
@@ -335,7 +334,7 @@ const REPORTING = {
   <section class="panel" id="p-msg">
     <div class="note blue">
       <b>Placeholders</b>
-      <code>{name}</code> customer's first name &nbsp;·&nbsp; <code>{business}</code> your business &nbsp;·&nbsp; <code>{link}</code> review link &nbsp;·&nbsp; <code>{town}</code> &nbsp;·&nbsp; <code>{service}</code> &nbsp;·&nbsp; <code>{me}</code> your name
+      <code>{name}</code> customer's first name &nbsp;·&nbsp; <code>{business}</code> your business &nbsp;·&nbsp; <code>{link}</code> review link &nbsp;·&nbsp; <code>{town}</code> &nbsp;·&nbsp; <code>{service}</code>
     </div>
 
     <h2>Google — text</h2>
@@ -361,8 +360,6 @@ const REPORTING = {
     <h2>Business</h2>
     <label for="c-biz">Business name</label>
     <input type="text" id="c-biz">
-    <label for="c-me">Your name (signs the message)</label>
-    <input type="text" id="c-me">
 
     <h2>Review links</h2>
     <label for="c-g">Google review link</label>
@@ -683,20 +680,28 @@ const QRCode = (function(){
 /* ==================================================================
    APP
    ================================================================== */
-const K = { cfg:'frt.cfg', tpl:'frt.tpl', cust:'frt.cust', dis:'frt.dis' };
+const K = { cfg:'frt.cfg', tpl:'frt.tpl', cust:'frt.cust', dis:'frt.dis', tplV:'frt.tplv' };
 const FOLLOWUP_DAYS = 7;
 
 const TPL_DEFAULT = {
-  gSms:  "Hi {name}, it's {me} from {business}. Thanks for having us out{town}. If you were happy with the survey, would you mind leaving us a quick Google review? It genuinely helps us out — mentioning the {service} and your town helps the most.\n\n{link}\n\nThanks!",
+  gSms:  "Hi {name}, this is the team at {business} — thanks for having us out{town}. If you were happy with the survey, would you mind leaving us a quick Google review? It genuinely helps us out — mentioning the {service} and your town helps the most.\n\n{link}\n\nThank you!",
   gSub:  "Quick favor from {business}",
-  gBody: "Hi {name},\n\nThanks again for choosing {business}{town}. It was a pleasure working with you.\n\nIf you were happy with how the job went, would you mind leaving us a short Google review? It takes about 30 seconds and it makes a real difference for a small local outfit like ours.\n\n{link}\n\nOne tip — if you can mention the {service} and your town in the review, that helps other neighbors find us.\n\nThanks,\n{me}\n{business}",
-  ySms:  "Hi {name}, {me} here from {business}. Thanks again for the job{town}. If you have a minute, a quick Yelp review would mean a lot to us:\n\n{link}\n\nAppreciate it!",
+  gBody: "Hi {name},\n\nThanks again for choosing {business}{town}. It was a pleasure working with you.\n\nIf you were happy with how the job went, would you mind leaving us a short Google review? It takes about 30 seconds and it makes a real difference for a small local outfit like ours.\n\n{link}\n\nOne tip — if you can mention the {service} and your town in the review, that helps other neighbors find us.\n\nThank you,\nThe {business} team",
+  ySms:  "Hi {name}, this is the team at {business} — thanks again for the job{town}. If you have a minute, a quick Yelp review would mean a lot to us:\n\n{link}\n\nAppreciate it!",
   ySub:  "Thanks from {business}",
-  yBody: "Hi {name},\n\nThanks again for trusting {business} with your {service}{town}.\n\nIf you were happy with the work, a quick Yelp review would help us a lot:\n\n{link}\n\nThanks,\n{me}\n{business}"
+  yBody: "Hi {name},\n\nThanks again for trusting {business} with your {service}{town}.\n\nIf you were happy with the work, a quick Yelp review would help us a lot:\n\n{link}\n\nThank you,\nThe {business} team"
 };
 
 let cfg  = load(K.cfg, {...DEFAULTS});
 let tpl  = load(K.tpl, {...TPL_DEFAULT});
+// Push the branded templates to every device, even ones that saved an older set,
+// so the message reads the same for everyone. Bump TPL_VERSION to re-roll again.
+const TPL_VERSION = '2';
+if (localStorage.getItem(K.tplV) !== TPL_VERSION) {
+  tpl = {...TPL_DEFAULT};
+  save(K.tpl, tpl);
+  localStorage.setItem(K.tplV, TPL_VERSION);
+}
 let cust = load(K.cust, []);
 let qrPlatform = 'google';
 let deferredPrompt = null;
@@ -755,7 +760,7 @@ function fill(str, c){
   return (str || '')
     .replace(/{name}/g,     first(c.name))
     .replace(/{business}/g, cfg.business || '')
-    .replace(/{me}/g,       cfg.signature || '')
+    .replace(/{me}/g,       cfg.business || '')
     .replace(/{link}/g,     link)
     .replace(/{town}/g,     c.town ? ' in ' + c.town : '')
     .replace(/{service}/g,  c.service || 'survey');
@@ -943,9 +948,16 @@ function fire(id, how){
     if (!c.email){ toast("No email on file"); return; }
     const subT = sendPlatform === 'yelp' ? tpl.ySub  : tpl.gSub;
     const bodT = sendPlatform === 'yelp' ? tpl.yBody : tpl.gBody;
-    location.href = 'mailto:' + encodeURIComponent(c.email)
+    // Recipient must stay raw — encoding the "@" makes Mail open a blank draft.
+    // Anchor-click is more reliable than location.href inside an installed PWA.
+    const href = 'mailto:' + c.email.trim()
       + '?subject=' + encodeURIComponent(fill(subT, c))
       + '&body='    + encodeURIComponent(fill(bodT, c));
+    const a = document.createElement('a');
+    a.href = href;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
   }
 
   c.sent = Date.now();
@@ -1016,7 +1028,6 @@ function resetTemplates(){
 /* ---------- config ---------- */
 function paintConfig(){
   document.getElementById('c-biz').value = cfg.business  || '';
-  document.getElementById('c-me').value  = cfg.signature || '';
   document.getElementById('c-g').value   = cfg.googleUrl || '';
   document.getElementById('c-y').value   = cfg.yelpUrl   || '';
 }
@@ -1024,7 +1035,6 @@ function saveConfig(){
   cfg = {
     business:  document.getElementById('c-biz').value.trim(),
     short:     cfg.short,
-    signature: document.getElementById('c-me').value.trim(),
     googleUrl: document.getElementById('c-g').value.trim(),
     yelpUrl:   document.getElementById('c-y').value.trim()
   };
