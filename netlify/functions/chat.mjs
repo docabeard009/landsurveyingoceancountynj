@@ -327,6 +327,10 @@ const PROVIDERS = {
 
 function flatten(system) { return typeof system === "string" ? system : system.static + "\n\n" + system.dynamic; }
 
+/* Bump this string whenever you edit this file — it is echoed by the
+   self-test so you can confirm at a glance that your deploy actually landed. */
+const BUILD = "chat.mjs v2 — retrieval v2 (FAQ index + IDF scoring)";
+
 const FALLBACK = "Sorry — I hit a snag. Please call us at 917.463.6042 or text 917.463.6042 and we'll help you right away.";
 
 /* ---- Which provider is active right now. ---- */
@@ -458,15 +462,70 @@ export default async (request) => {
 
   /* --- Diagnostic endpoint (gated by INSIGHTS_KEY) --- */
   if (request.method === "GET") {
-    const token = new URL(request.url).searchParams.get("selftest");
-    const secret = process.env.INSIGHTS_KEY;
-    if (token && secret && token === secret) {
-      const report = await selfTest();
-      return new Response(JSON.stringify(report, null, 2), {
-        status: 200,
+    const url = new URL(request.url);
+
+    // Only respond to a GET that explicitly asks for the self-test. A plain
+    // GET stays a 405 exactly as before, so the endpoint looks unchanged to
+    // anyone poking at it.
+    if (url.searchParams.has("selftest")) {
+      // .trim() both sides: a stray space or newline pasted into the Netlify
+      // env var is a very easy way to get a silent mismatch.
+      const token = String(url.searchParams.get("selftest") || "").trim();
+      const secret = String(process.env.INSIGHTS_KEY || "").trim();
+
+      // Fully authenticated -> complete report.
+      if (secret && token && token === secret) {
+        const report = await selfTest();
+        return new Response(JSON.stringify({ build: BUILD, ...report }, null, 2), {
+          status: 200,
+          headers: { "content-type": "application/json", "cache-control": "no-store", ...cors }
+        });
+      }
+
+      // INSIGHTS_KEY isn't configured, so there is no possible way to
+      // authenticate — and refusing here would hide the very fact that
+      // explains the failure. Return a REDACTED report instead: enough to
+      // diagnose, with no key material of any kind. Setting INSIGHTS_KEY
+      // switches this off and locks the endpoint down again.
+      if (!secret) {
+        const full = await selfTest();
+        return new Response(JSON.stringify({
+          build: BUILD,
+          mode: "redacted (INSIGHTS_KEY is not set on this site)",
+          providerActive: full.providerActive,
+          model: full.model,
+          keyEnvVar: full.keyEnvVar,
+          keyPresent: full.keyPresent,
+          providerStatus: full.providerStatus,
+          roundTripMs: full.roundTripMs,
+          knowledgeEntries: full.knowledgeEntries,
+          knowledgeFaqPairs: full.knowledgeFaqPairs,
+          providerDetail: full.providerDetail ? String(full.providerDetail).slice(0, 200) : null,
+          verdict: full.verdict,
+          note: "Set INSIGHTS_KEY in Netlify env vars to require a token here. No API key value is ever included in this response."
+        }, null, 2), {
+          status: 200,
+          headers: { "content-type": "application/json", "cache-control": "no-store", ...cors }
+        });
+      }
+
+      // Key IS configured but the token was wrong — say why, reveal nothing.
+      const reason = /^(your_insights_key|your-insights-key|insights_key)$/i.test(token)
+        ? "You pasted the placeholder. Replace it with the actual value of the INSIGHTS_KEY environment variable."
+        : "The selftest token does not match INSIGHTS_KEY. Check for a typo, or a trailing space in the Netlify environment variable.";
+
+      return new Response(JSON.stringify({
+        build: BUILD,
+        ok: false,
+        insightsKeyConfigured: true,
+        tokenReceivedLength: token.length,
+        reason
+      }, null, 2), {
+        status: 401,
         headers: { "content-type": "application/json", "cache-control": "no-store", ...cors }
       });
     }
+
     return new Response("Method not allowed", { status: 405, headers: cors });
   }
 
