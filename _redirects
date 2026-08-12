@@ -1,3 +1,7 @@
 # Pretty URLs -> .html (Netlify)
 /services/*  /services/:splat.html  200
 /areas/*     /areas/:splat.html     200
+
+# Retired duplicate calculator -> live version
+/land-survey-calculator.html  /survey-cost-calculator.html  301
+/land-survey-calculator       /survey-cost-calculator.html  301

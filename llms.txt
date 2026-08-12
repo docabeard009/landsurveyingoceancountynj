@@ -53,7 +53,7 @@ Lakeland Surveying, Inc. is a New Jersey Professional Land Surveyor (PLS) firm f
 - [About Lakeland Surveying](https://landsurveyingoceancountynj.com/about.html): Company history since 1972 and licensed surveyor credentials.
 - [Survey Histories](https://landsurveyingoceancountynj.com/survey-histories.html): Archive of acquired historical New Jersey survey records.
 - [Request a Quote / Contact](https://landsurveyingoceancountynj.com/contact.html): Current phone, email, and quote request form.
-- [Land Survey Cost Calculator](https://landsurveyingoceancountynj.com/land-survey-calculator.html): Estimate survey costs by type and property.
+- [Land Survey Cost Calculator](https://landsurveyingoceancountynj.com/survey-cost-calculator.html): Estimate survey costs by type and property.
 
 ## Optional
 
