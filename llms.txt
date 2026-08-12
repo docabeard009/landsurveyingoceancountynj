@@ -4,6 +4,14 @@
 
 Lakeland Surveying, Inc. is a New Jersey Professional Land Surveyor (PLS) firm founded in 1972 and located at 1501 Grand Central Avenue, Lavallette, NJ 08735. Its core specialty is FEMA Elevation Certificates and flood-zone work (AE and VE zones, LOMA and LOMR-F applications, NAVD 88 datum) for shore and barrier-island properties in Ocean, Monmouth, Atlantic, and Cape May counties.
 
+## Company Details
+
+- Name: Lakeland Surveying, Inc.
+- Founded: 1972
+- Office: 1501 Grand Central Avenue, Lavallette, NJ 08735
+- Phone: 917.463.6042
+- Licensed New Jersey Professional Land Surveyors (PLS)
+
 ## Services
 
 - [Flood Elevation Certificates](https://landsurveyingoceancountynj.com/services/flood-elevation-certificates.html): FEMA Elevation Certificates for flood insurance rating, LOMA/LOMR-F support, AE and VE zone determinations, NAVD 88 datum.
