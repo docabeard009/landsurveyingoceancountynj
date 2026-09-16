@@ -1,6 +1,17 @@
 // Progressive enhancement flag — reveal-hiding only applies when JS runs
 document.documentElement.classList.add('js');
 
+// Sitewide "Guides" nav item (injected here so all 440+ pages pick it up from one file)
+(function(){
+  const menu = document.querySelector('header.nav .menu');
+  if (!menu || menu.querySelector('a[href$="guides/index.html"]')) return;
+  const blog = menu.querySelector('a[href$="blog.html"]');
+  const li = document.createElement('li');
+  li.innerHTML = '<a href="/guides/index.html">Guides</a>';
+  const after = blog ? blog.parentElement : menu.lastElementChild;
+  after.insertAdjacentElement('afterend', li);
+})();
+
 // Mobile nav toggle
 const burger = document.querySelector('.burger');
 const header = document.querySelector('header.nav');
