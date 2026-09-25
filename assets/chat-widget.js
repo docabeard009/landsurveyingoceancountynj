@@ -1059,7 +1059,8 @@
       "<label>Name</label><input name=\"name\" required placeholder=\"Your name\" autocomplete=\"name\" />" +
       "<label>Phone</label><input name=\"phone\" required placeholder=\"Best number to reach you\" inputmode=\"tel\" autocomplete=\"tel\" />" +
       "<label>Email (optional)</label><input name=\"email\" placeholder=\"you@email.com\" inputmode=\"email\" autocomplete=\"email\" />" +
-      "<label>Property address or town</label><input name=\"location\" required placeholder=\"Street address or town, NJ\" value=\"" + esc(S.town ? S.town.name + ", NJ" : "") + '" />' +
+      "<label>Property street address</label><input name=\"location\" placeholder=\"Street address\" autocomplete=\"street-address\" />" +
+      "<label>Town (required)</label><input name=\"town\" required placeholder=\"e.g. Toms River\" autocomplete=\"address-level2\" value=\"" + esc(S.town ? S.town.name : "") + '" />' +
       "<label>What do you need?</label><select name=\"service\">" + serviceOptions + "</select>" +
       "<label>Deadline or anything else</label><textarea name=\"message\" placeholder=\"Closing date, permit deadline, lot size, questions…\"></textarea>" +
       '<p class="lk-err" style="display:none"></p>' +
@@ -1076,12 +1077,12 @@
     qform.addEventListener("submit", function (e) {
       e.preventDefault();
       var data = {};
-      ["name", "phone", "email", "location", "service", "message"].forEach(function (k) {
+      ["name", "phone", "email", "location", "town", "service", "message"].forEach(function (k) {
         var n = qform.querySelector('[name="' + k + '"]');
         data[k] = n ? n.value.trim() : "";
       });
-      if (!data.name || !data.phone || !data.location) {
-        err.textContent = "Please add your name, phone and the property location.";
+      if (!data.name || !data.phone || !data.town) {
+        err.textContent = !data.town ? "Please add the town the property is in." : "Please add your name and phone number.";
         err.style.display = "block";
         return;
       }
@@ -1092,12 +1093,14 @@
       data.service = (SERVICES[data.service] && SERVICES[data.service].label) || data.service;
       data.job_summary = summary || "(not specified)";
       data.chat_estimate = est || "(none generated)";
-      data.county = S.town ? S.town.county + " County" : "";
+      var typedTown = findTown(data.town);
+      var knownTown = S.town || (typedTown && typedTown.name ? typedTown : null);
+      data.county = knownTown ? knownTown.county + " County" : "";
       data.lot_size = S.acres ? acresLabel(S.acres) : "";
       data.site_conditions = S.terrain !== null ? terrainWord(S.terrain) : "";
       data.rush = S.rush ? "YES — deadline driven" : "no";
       data.source_page = location.pathname;
-      data._subject = "Chat quote — " + data.service + (S.town ? " — " + S.town.name : "");
+      data._subject = "Chat quote — " + data.service + " — " + data.town;
 
       fetch(BIZ.formspree, {
         method: "POST",
