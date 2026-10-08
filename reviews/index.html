@@ -298,7 +298,7 @@ const REPORTING = {
       <div style="margin-top:8px"><button class="btn btn-primary btn-sm" onclick="doInstall()">Install app</button></div>
     </div>
 
-    <button class="btn btn-primary" onclick="openAdd()">+ New customer</button>
+    <button class="btn btn-primary" onclick="openAdd()">Send a review request</button>
 
     <div id="dueWrap" style="display:none">
       <h2>Follow up</h2>
@@ -313,7 +313,6 @@ const REPORTING = {
   <section class="panel" id="p-qr">
     <div class="seg" id="qrSeg">
       <button class="on" data-p="google" onclick="setQrPlatform('google')">Google</button>
-      <button data-p="yelp" onclick="setQrPlatform('yelp')">Yelp</button>
     </div>
     <div class="qrwrap">
       <div class="biz" id="qrBiz">—</div>
@@ -899,11 +898,7 @@ function openSend(id){
   document.getElementById('sheet').innerHTML = `
     <div class="grab"></div>
     <h3>Ask ${esc(first(c.name))}</h3>
-    <div class="sub">Opens your Messages or Mail app with the note already written. You still hit send.</div>
-    <div class="seg" id="sendSeg">
-      <button class="on" onclick="pick('google')">Google</button>
-      <button onclick="pick('yelp')">Yelp</button>
-    </div>
+    <div class="sub">Opens your Messages or Mail app with the Google review link already written. You still hit send.</div>
     <label>Preview</label>
     <textarea id="f-preview"></textarea>
     <button class="btn btn-primary" id="btnSms" onclick="fire('${id}','sms')">Send as text</button>
@@ -926,9 +921,9 @@ function pick(p){
 function refreshPreview(id){
   currentId = id;
   const c = cust.find(x => x.id === id);
-  const t = sendPlatform === 'yelp' ? tpl.ySms : tpl.gSms;
+  const t = tpl.gSms;
   document.getElementById('f-preview').value = fill(t, c);
-  const link = sendPlatform === 'yelp' ? cfg.yelpUrl : cfg.googleUrl;
+  const link = cfg.googleUrl;
   const missing = !link;
   document.getElementById('btnSms').disabled = missing;
   document.getElementById('btnMail').disabled = missing;
@@ -948,8 +943,8 @@ function fire(id, how){
     location.href = 'sms:' + num + sep + 'body=' + encodeURIComponent(body);
   } else {
     if (!c.email){ toast("No email on file"); return; }
-    const subT = sendPlatform === 'yelp' ? tpl.ySub  : tpl.gSub;
-    const bodT = sendPlatform === 'yelp' ? tpl.yBody : tpl.gBody;
+    const subT = tpl.gSub;
+    const bodT = tpl.gBody;
     // Recipient must stay raw — encoding the "@" makes Mail open a blank draft.
     // Anchor-click is more reliable than location.href inside an installed PWA.
     const href = 'mailto:' + c.email.trim()
