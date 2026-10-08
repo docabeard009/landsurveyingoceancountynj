@@ -40,7 +40,7 @@
   <div class="panel">
     <p class="kicker">Google review</p>
     <button class="btn" id="google" type="button">Copy the line and open Google</button>
-    <p class="note" id="status">Copies the line, then opens the Lavallette review page. Tap the stars, then paste.</p>
+    <p class="note" id="status">Copies the line, then opens the Google review box. Tap the stars, then paste.</p>
   </div>
   <div class="panel" style="margin-top:14px">
     <p class="kicker">The line that gets copied</p>
@@ -51,14 +51,14 @@
 <script>
 document.getElementById("google").addEventListener("click", async function(){
   var line = document.getElementById("line").value;
-  try { await navigator.clipboard.writeText(line); document.getElementById("status").textContent = "Copied. Google is opening — tap the stars, then paste."; }
+  try { await navigator.clipboard.writeText(line); document.getElementById("status").textContent = "Copied. The Google review box is opening — tap the stars, then paste."; }
   catch (e) { document.getElementById("status").textContent = "Google is opening. If the line did not copy, select it above and paste."; }
   fetch("/.netlify/functions/review-log", {
     method:"POST",
     headers:{"content-type":"application/json"},
     body:JSON.stringify({events:[{ev:"landed", client:"lakeland", who:"", town:"", service:"", platform:"google", channel:""}]})
   }).catch(function(){});
-  window.location.href = "https://share.google/SHhVbNamu9LHwb7rn";
+  window.location.href = "https://g.page/r/Cb1KRMDEA-YUEAE/review";
 });
 </script>
 </body>
