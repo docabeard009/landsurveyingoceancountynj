@@ -33,7 +33,7 @@ function rows() {
   return out;
 }
 
-function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&":"&","<":"<",">":">",'"':""" }[c])); }
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c])); }
 
 export default async (req) => {
   const url = new URL(req.url);
