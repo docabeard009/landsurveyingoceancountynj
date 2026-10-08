@@ -19,3 +19,8 @@
   from = "/rankings/"
   to = "/rankings.html"
   status = 200
+
+[[redirects]]
+  from = "/flood-zone-check.html"
+  to = "/services/flood-elevation-certificates.html"
+  status = 301
