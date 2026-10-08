@@ -35,7 +35,7 @@
     endpoint: "/.netlify/functions/chat",
     calculator: "/survey-cost-calculator.html",
     areasIndex: "/areas/",
-    aiTimeoutMs: 7000
+    aiTimeoutMs: 12000
   };
 
   /* ==========================================================================
@@ -713,23 +713,59 @@
      10. CONVERSATION — ENTRY
      ========================================================================== */
   function greet() {
-    addBot("Hi — I'm Lakeland's assistant. I can price a survey for you in about four taps, tell you which survey you actually need, or check that we cover your town.<br><br>What brings you in?");
+    addBot("Hi — I'm Lakeland's assistant. Ask about a survey, a property line, an elevation certificate, or your town. You can also type a question.");
     addOptions([
-      { label: "How much will it cost?",       sub: "Get a real range in ~4 taps", value: "cost" },
-      { label: "Which survey do I need?",      sub: "Answer one question and I'll tell you", value: "triage" },
-      { label: "Do you cover my town?",        sub: "256 towns across 9 NJ counties", value: "area" },
-      { label: "I have a specific question",   sub: "Flood zones, closings, permits, records", value: "ask" }
+      { label: "How much does a survey cost?", sub: "Typical range, then a quote from the address", value: "cost" },
+      { label: "My neighbor and I disagree on the line", sub: "What a boundary survey does, and what it doesn't", value: "dispute" },
+      { label: "Do I need an elevation certificate?", sub: "Flood insurance, lenders, and LOMA", value: "elev" },
+      { label: "Do you cover my town?", sub: "Nine counties listed, statewide on request", value: "area" }
     ], function (v) {
-      if (v === "cost")   return startCost();
-      if (v === "triage") return startTriage();
-      if (v === "area")   return askTown("area");
-      typing(true);
-      setTimeout(function () {
-        typing(false);
-        addBot("Go ahead — type it below. I know our services, our whole service area, and roughly what things cost.");
-        setChips(["Do I need an elevation certificate?", "How fast can you turn a survey?", "What's a boundary survey?"]);
-        input.focus();
-      }, 300);
+      if (v === "cost") return answerCostIntro();
+      if (v === "dispute") return answerDispute();
+      if (v === "elev") return answerElev();
+      if (v === "area") return askTown("area");
+    });
+    setChips(["Which survey do I need?", "How fast can you turn a survey?"]);
+  }
+
+  function answerCostIntro() {
+    think(function () {
+      addBot("A straightforward residential boundary survey in Ocean County commonly runs about <b>$800 to $3,500</b>. Barrier-island and waterfront lots often cost more. That is a typical range, not a quote — the fee is confirmed from the address.<br><br>I can narrow it with the same calculator we publish, or you can call or text <b>917.463.6042</b>.");
+      addOptions([
+        { label: "Price my survey", value: "cost" },
+        { label: "Which survey do I need?", value: "triage" },
+        { label: "Have someone call me", value: "quote" }
+      ], function (v) {
+        if (v === "cost") return startCost();
+        if (v === "triage") return startTriage();
+        openQuote();
+      }, { echo: false });
+    });
+  }
+
+  function answerDispute() {
+    think(function () {
+      addBot("Hire a New Jersey licensed professional land surveyor. We research the deed and filed maps, recover or set corners, and deliver a signed, sealed boundary survey showing fences and structures against the line. The survey does not decide the dispute — it is the map an attorney or court uses.<br><br>Call or text <b>917.463.6042</b> with the address.");
+      addOptions([
+        { label: "Price a boundary survey", value: "cost" },
+        { label: "Have someone call me", value: "quote" }
+      ], function (v) {
+        if (v === "cost") { S.service = "boundary"; return nextCostStep(); }
+        openQuote();
+      }, { echo: false });
+    });
+  }
+
+  function answerElev() {
+    think(function () {
+      addBot("Usually, yes, if the home is in a FEMA flood zone, a lender is asking, the premium jumped, or you elevated or rebuilt. The certificate records the lowest floor against the base flood elevation. It does not itself remove a flood zone — a LOMA is FEMA's decision, and we prepare the survey data it needs.<br><br>We do these across Lavallette, Seaside, Ortley Beach, Mantoloking, and Long Beach Island. Call or text <b>917.463.6042</b>.");
+      addOptions([
+        { label: "Price an elevation certificate", value: "cost" },
+        { label: "Have someone call me", value: "quote" }
+      ], function (v) {
+        if (v === "cost") { S.service = "flood"; return nextCostStep(); }
+        openQuote();
+      }, { echo: false });
     });
   }
 
@@ -1136,6 +1172,10 @@
 
     // chips that map straight to actions
     if (/^lock in a real quote$/i.test(text) || /^have someone call me$/i.test(text)) return openQuote();
+    if (/how much does a survey cost/i.test(text)) return answerCostIntro();
+    if (/disagree on the line|property-line dispute|property line dispute/i.test(text)) return answerDispute();
+    if (/need an elevation certificate/i.test(text)) return answerElev();
+    if (/^which survey do i need\??$/i.test(text)) return startTriage();
     if (/^price another survey$/i.test(text) || /^price a different survey$/i.test(text)) {
       S.service = null; S.acres = null; S.terrain = null; S.flood = false; S.rush = false;
       return askService();
@@ -1246,7 +1286,7 @@
     // the next useful thing rather than burning an AI call
     if (town) return showCoverage();
 
-    // last resort: one AI call per session, then the menu
+    // unmatched questions go to the site-aware assistant every time
     askAI(text);
   }
 
@@ -1280,8 +1320,6 @@
   }
 
   function askAI(text) {
-    if (S.aiUsed) return fallbackMenu();
-    S.aiUsed = true;
     S.busy = true; sendBtn.disabled = true; typing(true);
 
     var done = false;
@@ -1299,7 +1337,16 @@
           { label: "Have someone call me", value: "quote" }
         ], function (v) { v === "cost" ? nextCostStep() : openQuote(); }, { echo: false });
       } else {
-        fallbackMenu();
+        addBot("I couldn't reach the assistant just now. Call or text <b>917.463.6042</b> and the office can answer it. I can still price a survey or check a town.");
+        addOptions([
+          { label: "Price a survey", value: "cost" },
+          { label: "Do you cover my town?", value: "area" },
+          { label: "Have someone call me", value: "quote" }
+        ], function (v) {
+          if (v === "cost") return startCost();
+          if (v === "area") { S.mode = "area"; return askTown("area"); }
+          openQuote();
+        }, { echo: false });
       }
     }
 
