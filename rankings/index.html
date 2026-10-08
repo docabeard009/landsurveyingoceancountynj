@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lakeland rank platform</title>
+<style>
+  body{margin:0;background:#f4f7f9;color:#13293a;font-family:Georgia,serif}
+  header{background:#0B2A45;color:#fff;border-bottom:3px solid #E2731B}
+  .bar{max-width:640px;margin:0 auto;padding:22px;display:flex;justify-content:space-between}
+  .brand{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.14em;font-weight:700;font-size:13px}
+  .brand span{color:#E2731B}
+  main{max-width:640px;margin:0 auto;padding:36px 22px}
+  h1{font-weight:500;font-size:36px;margin:0 0 10px}
+  p,label{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  form{background:#fff;border:1px solid #e4ebf0;border-radius:8px;padding:22px;margin-top:18px}
+  input{width:100%;padding:12px;border:1px solid #d7e0e6;border-radius:6px;font-size:16px}
+  button{margin-top:12px;width:100%;background:#0B2A45;color:#fff;border:0;border-radius:6px;padding:14px;font-weight:700}
+</style>
+</head>
+<body>
+<header><div class="bar"><div class="brand">LAKELAND <span>SURVEYING</span></div><div class="brand">Rank platform</div></div></header>
+<main>
+  <h1>See where Lakeland shows up.</h1>
+  <p>Nine South Jersey counties. Keywords, answer-engine prompts, and the surveyors you are measured against.</p>
+  <form method="get" action="/.netlify/functions/rank-platform">
+    <label for="key">Platform key</label>
+    <input id="key" name="key" type="password" autocomplete="current-password" required>
+    <button type="submit">Open the platform</button>
+  </form>
+</main>
+</body>
+</html>
