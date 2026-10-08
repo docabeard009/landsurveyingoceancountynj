@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0B2A45">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Reviews">
+<meta name="apple-mobile-web-app-title" content="Lakeland Reviews">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 
@@ -301,6 +301,7 @@ const REPORTING = {
       <div style="margin-top:8px"><button class="btn btn-primary btn-sm" onclick="doInstall()">Install app</button></div>
     </div>
 
+    <p style="font-size:15px;color:#5d7282;margin:0 0 12px">On site, enter the customer and text them the review page. To keep this on the phone: Safari Share, then Add to Home Screen. On Android, use the browser menu and Install app.</p>
     <button class="btn btn-primary" onclick="openAdd()">Send a review request</button>
 
     <div id="dueWrap" style="display:none">
@@ -873,7 +874,8 @@ function saveCust(id){
   save(K.cust, cust);
   closeSheet();
   render();
-  toast(id ? "Saved" : "Customer added");
+  if (!id) openSend(cust[0].id);
+  else toast("Saved");
 }
 
 function del(id){

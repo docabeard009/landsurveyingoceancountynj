@@ -1,7 +1,7 @@
 {
-  "name": "Review Requests",
+  "name": "Lakeland Reviews",
   "short_name": "Reviews",
-  "description": "Send Google and Yelp review requests to customers.",
+  "description": "Send a Google review request from the job site.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
