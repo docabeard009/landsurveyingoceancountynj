@@ -1255,8 +1255,13 @@
         if (f.s) S.service = S.service || f.s;
         addOptions([
           { label: "What would that cost?", value: "cost" },
-          { label: "Have someone call me",  value: "quote" }
-        ], function (v) { v === "cost" ? nextCostStep() : openQuote(); }, { echo: false });
+          { label: "Have someone call me",  value: "quote" },
+          { label: "Ask the assistant", value: "ai" }
+        ], function (v) {
+          if (v === "cost") return nextCostStep();
+          if (v === "ai") return askAI(text);
+          openQuote();
+        }, { echo: false });
       }, 400);
     }
 
@@ -1297,10 +1302,12 @@
       addOptions([
         { label: "Price a survey here",     value: "cost" },
         { label: "Which survey do I need?", value: "triage" },
+        { label: "Ask the assistant",       value: "ai" },
         { label: "Have someone call me",    value: "quote" }
       ], function (v) {
         if (v === "cost")   { S.step = null; return startCost({ town: S.town }); }
         if (v === "triage") return startTriage();
+        if (v === "ai")     return askAI(text);
         openQuote();
       });
     });
@@ -1339,10 +1346,12 @@
       } else {
         addBot("I couldn't reach the assistant just now. Call or text <b>917.463.6042</b> and the office can answer it. I can still price a survey or check a town.");
         addOptions([
+          { label: "Try the assistant again", value: "ai" },
           { label: "Price a survey", value: "cost" },
           { label: "Do you cover my town?", value: "area" },
           { label: "Have someone call me", value: "quote" }
         ], function (v) {
+          if (v === "ai") return askAI(text);
           if (v === "cost") return startCost();
           if (v === "area") { S.mode = "area"; return askTown("area"); }
           openQuote();
