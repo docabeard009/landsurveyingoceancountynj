@@ -3,45 +3,59 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Review Lakeland Surveying</title>
+<title>Thank you — Lakeland Surveying</title>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0B2A45">
 <style>
-  body{margin:0;background:#eef2f5;color:#13293a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-  .wrap{max-width:520px;margin:0 auto;padding:28px 18px 48px}
-  .mark{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#2C7DA0;font-weight:700}
-  h1{font-size:34px;line-height:1.05;margin:8px 0 10px;letter-spacing:-.4px}
-  p{font-size:17px;line-height:1.45;color:#3d5566}
-  .card{background:#fff;border-radius:18px;padding:18px;margin-top:16px;box-shadow:0 16px 40px rgba(11,42,69,.08)}
-  a.btn{display:block;text-align:center;text-decoration:none;color:#fff;border-radius:12px;padding:15px 16px;font-weight:700;margin-top:10px}
-  .g{background:#0B2A45}
-  textarea{width:100%;min-height:96px;border:1px solid #d7e0e6;border-radius:12px;padding:12px;font:15px/1.4 sans-serif}
-  .hint{font-size:13px;color:#69818f}
+  :root { --navy:#0B2A45; --orange:#E2731B; --ink:#13293A; --muted:#5d7282; --line:#e4ebf0; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:#f4f7f9; color:var(--ink); font-family:Georgia, "Times New Roman", serif; }
+  header { background:var(--navy); color:#fff; border-bottom:3px solid var(--orange); }
+  .bar { max-width:680px; margin:0 auto; padding:22px 22px 18px; display:flex; justify-content:space-between; gap:16px; align-items:end; }
+  .brand { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-weight:700; letter-spacing:.14em; font-size:13px; }
+  .brand span { color:var(--orange); }
+  .est { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:#9fb3c4; }
+  main { max-width:680px; margin:0 auto; padding:36px 22px 64px; }
+  h1 { font-size:40px; line-height:1.05; font-weight:500; margin:0 0 14px; letter-spacing:-.3px; }
+  .lead { font-size:18px; line-height:1.5; color:#31485a; margin:0 0 22px; }
+  .panel { background:#fff; border:1px solid var(--line); border-radius:8px; padding:22px; }
+  .kicker { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); font-weight:700; margin:0 0 8px; }
+  a.btn { display:block; text-align:center; text-decoration:none; background:var(--navy); color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-weight:700; font-size:16px; border-radius:6px; padding:15px 16px; }
+  a.btn:hover { background:#143a5c; }
+  .note { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:13px; color:var(--muted); margin:12px 0 0; }
+  textarea { width:100%; min-height:110px; margin-top:8px; border:1px solid var(--line); border-radius:6px; padding:12px; font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--ink); background:#fbfcfd; }
+  .office { margin-top:22px; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:13px; color:var(--muted); }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="mark">Lakeland Surveying · Lavallette</div>
-  <h1>A one-minute review helps the next shore owner.</h1>
-  <p>Thank you for your business. Reviews really help us out. If you have a minute, mention the town and the job: elevation certificate, boundary, or closing.</p>
-  <div class="card">
-    <a class="btn g" id="google" href="https://share.google/SHhVbNamu9LHwb7rn">Review on Google</a>
+<header>
+  <div class="bar">
+    <div class="brand">LAKELAND <span>SURVEYING</span></div>
+    <div class="est">Lavallette · Est. 1972</div>
   </div>
-  <div class="card">
-    <p style="margin-top:0"><b>A line you can paste</b></p>
+</header>
+<main>
+  <h1>Thank you for your business.</h1>
+  <p class="lead">Reviews really help us out. If you have a minute, a Google review with the town and the job — an elevation certificate, a boundary, or a closing — helps the next shore owner find a licensed surveyor.</p>
+  <div class="panel">
+    <p class="kicker">Google review</p>
+    <a class="btn" id="google" href="https://share.google/SHhVbNamu9LHwb7rn">Write a review</a>
+    <p class="note">Opens the Lavallette listing. Tap Write a review.</p>
+  </div>
+  <div class="panel" style="margin-top:14px">
+    <p class="kicker">If you want a starting line</p>
     <textarea readonly>Lakeland Surveying surveyed our property in [town]. They showed up when they said they would, and the signed survey was ready for our [closing / flood insurance / fence]. Clear and professional.</textarea>
-    <p class="hint">Google opens the Lavallette listing. Tap Write a review.</p>
   </div>
-</div>
+  <p class="office">Lakeland Surveying · 1501 Grand Central Avenue, Lavallette, NJ 08735 · 917.463.6042</p>
+</main>
 <script>
-function logClick(platform){
+document.getElementById("google").addEventListener("click", function(){
   fetch("/.netlify/functions/review-log", {
     method:"POST",
     headers:{"content-type":"application/json"},
-    body:JSON.stringify({events:[{ev:"landed", client:"lakeland", who:"", town:"", service:"", platform:platform, channel:""}]})
+    body:JSON.stringify({events:[{ev:"landed", client:"lakeland", who:"", town:"", service:"", platform:"google", channel:""}]})
   }).catch(function(){});
-}
-document.getElementById("google").addEventListener("click", function(){ logClick("google"); });
+});
 </script>
 </body>
 </html>
