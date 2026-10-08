@@ -331,7 +331,7 @@ function flatten(system) { return typeof system === "string" ? system : system.s
 
 /* Bump this string whenever you edit this file — it is echoed by the
    self-test so you can confirm at a glance that your deploy actually landed. */
-const BUILD = "chat.mjs v2 — retrieval v2 (FAQ index + IDF scoring)";
+const BUILD = "chat.mjs v3 — provider fallback on failed calls";
 
 const FALLBACK = "Sorry — I hit a snag. Please call us at 917.463.6042 or text 917.463.6042 and we'll help you right away.";
 
@@ -546,17 +546,19 @@ export default async (request) => {
     const system = { static: SYSTEM_STATIC, dynamic: buildContext(lastUser ? lastUser.content : "") };
 
     const { provider, name } = activeProvider();
-    if (!process.env[provider.key]) {
-      console.error("CHAT FAIL — missing API key env var:", provider.key, "(provider:", name + ")");
-      return json({ reply: FALLBACK }, cors);
+    const order = [name, ...Object.keys(PROVIDERS).filter(n => n !== name)];
+    let res = { ok: false, status: 0, detail: "No provider configured." };
+    for (const candidate of order) {
+      const next = PROVIDERS[candidate];
+      if (!process.env[next.key]) {
+        console.error("CHAT SKIP — missing API key env var:", next.key, "(provider:", candidate + ")");
+        continue;
+      }
+      res = await callProvider(next, trimmed, system);
+      if (res.ok) return json({ reply: res.text }, cors);
+      console.error("CHAT FAIL — provider", candidate, "status", res.status, "detail:", String(res.detail).slice(0, 400));
     }
-
-    const res = await callProvider(provider, trimmed, system);
-    if (!res.ok) {
-      console.error("CHAT FAIL — provider", name, "status", res.status, "detail:", String(res.detail).slice(0, 400));
-      return json({ reply: FALLBACK }, cors);
-    }
-    return json({ reply: res.text }, cors);
+    return json({ reply: FALLBACK, failed: true }, cors);
   } catch (e) {
     console.error("CHAT FAIL — exception:", e && e.stack ? e.stack : e);
     return json({ reply: FALLBACK }, cors);

@@ -1326,7 +1326,8 @@
     return bestScore >= 7 ? best : null;
   }
 
-  function askAI(text) {
+  function askAI(text, attempt) {
+    attempt = attempt || 1;
     S.busy = true; sendBtn.disabled = true; typing(true);
 
     var done = false;
@@ -1336,13 +1337,16 @@
       clearTimeout(timer);
       typing(false);
       S.busy = false; sendBtn.disabled = false;
-      if (reply) {
+      if (reply && !/hit a snag/i.test(reply)) {
         S.history.push({ role: "assistant", content: reply });
         addBot(esc(reply).replace(/\n/g, "<br>"));
         addOptions([
           { label: "Price my survey", value: "cost" },
           { label: "Have someone call me", value: "quote" }
         ], function (v) { v === "cost" ? nextCostStep() : openQuote(); }, { echo: false });
+      } else if (attempt < 2) {
+        addBot("The assistant didn't answer. Trying once more.");
+        return askAI(text, attempt + 1);
       } else {
         addBot("I couldn't reach the assistant just now. Call or text <b>917.463.6042</b> and the office can answer it. I can still price a survey or check a town.");
         addOptions([
