@@ -9,3 +9,13 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/rankings"
+  to = "/rankings.html"
+  status = 200
+
+[[redirects]]
+  from = "/rankings/"
+  to = "/rankings.html"
+  status = 200
