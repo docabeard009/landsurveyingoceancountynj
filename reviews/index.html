@@ -76,6 +76,10 @@ const REPORTING = {
   }
   header .row{ display:flex; justify-content:space-between; align-items:end; gap:12px; max-width:680px; margin:0 auto; }
   header .biz{ font-size:13px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+
+  .lk-fab, .lk-panel, .lk-textbtn, a[href^="sms:"][class*="text"] { display:none !important; }
+  header .biz span { color:var(--orange); }
+
   header .tag{
     font-family:var(--mono); font-size:11px; letter-spacing:.12em;
     text-transform:uppercase; color:#9fb3c4; margin-top:0;
@@ -276,7 +280,7 @@ const REPORTING = {
 
 <header>
   <div class="row">
-    <div class="biz" id="hdrBiz">LAKELAND SURVEYING</div>
+    <div class="biz" id="hdrBiz">LAKELAND <span>SURVEYING</span></div>
     <div class="tag">Lavallette · Est. 1972</div>
   </div>
 </header>
@@ -302,6 +306,8 @@ const REPORTING = {
     </div>
 
     <p style="font-size:15px;color:#5d7282;margin:0 0 12px">On site, enter the customer and text them the review page. To keep this on the phone: Safari Share, then Add to Home Screen. On Android, use the browser menu and Install app.</p>
+    <h1 style="font-family:Georgia,serif;font-weight:500;font-size:34px;line-height:1.05;margin:0 0 8px">Send a review request.</h1>
+    <p style="font-size:17px;line-height:1.45;color:#31485a;margin:0 0 16px">On site, enter the customer. The text opens with the review page already written.</p>
     <button class="btn btn-primary" onclick="openAdd()">Send a review request</button>
 
     <div id="dueWrap" style="display:none">
