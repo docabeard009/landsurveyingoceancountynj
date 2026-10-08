@@ -22,7 +22,7 @@
 const DEFAULTS = {
   business:   "Lakeland Surveying",
   short:      "Lakeland",
-  googleUrl:  "https://share.google/SHhVbNamu9LHwb7rn",
+  googleUrl:  "https://landsurveyingoceancountynj.com/review.html",
   yelpUrl:    "https://www.yelp.com/writeareview/biz/LvQ1CQridhajSuJKO7Vo5g"
 };
 
@@ -719,7 +719,7 @@ function load(k, fb){
     for (const key of Object.keys(saved)) {
       if (saved[key] === "" || saved[key] == null) delete saved[key];
     }
-    if (saved.googleUrl && saved.googleUrl.includes("4cUMTvVXyc93Th42U")) delete saved.googleUrl;
+    if (saved.googleUrl && (saved.googleUrl.includes("share.google") || saved.googleUrl.includes("4cUMTvVXyc93Th42U"))) delete saved.googleUrl;
     if (saved.yelpUrl && saved.yelpUrl.includes("writeareview")) delete saved.yelpUrl;
     return {...fb, ...saved};
   } catch(e){ return fb; }
