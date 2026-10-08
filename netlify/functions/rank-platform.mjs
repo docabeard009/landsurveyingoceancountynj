@@ -1,3 +1,5 @@
+import { getStore } from '@netlify/blobs';
+
 const COUNTIES = ["Ocean","Monmouth","Atlantic","Cape May","Burlington","Camden","Gloucester","Salem","Cumberland"];
 const THEMES = [
   ["Elevation certificate", "flood elevation certificate", "FEMA elevation certificate"],
@@ -39,6 +41,16 @@ export default async (req) => {
   if (!process.env.GEO_KEY || key !== process.env.GEO_KEY) {
     return new Response("Not authorized. Use the platform key.", { status: 401 });
   }
+  const store = getStore("geo");
+  const [latest, status] = await Promise.all([
+    store.get("lakeland/latest", { type: "json" }).catch(() => null),
+    store.get("lakeland/status", { type: "json" }).catch(() => null)
+  ]);
+  const summary = latest?.summary;
+  const score = summary
+    ? `<p>Last answer-engine check: ${esc(latest.finishedAt || "")}. Lakeland was named in ${esc(summary.overallSurfacedPct)}% of answers.</p>`
+    : `<p class="note">No answer-engine check stored yet. Run one. It can take several minutes.</p>`;
+  const runUrl = `/.netlify/functions/geo-run-background?client=lakeland&key=${encodeURIComponent(key)}`;
   const list = rows();
   const table = list.map(r => `<tr><td>${esc(r.county)}</td><td>${esc(r.theme)}</td><td>${esc(r.queries.join(" · "))}</td><td>Not checked</td></tr>`).join("");
   const prompts = COUNTIES.flatMap(c => [
@@ -63,6 +75,8 @@ td,th{border-bottom:1px solid #e4ebf0;text-align:left;padding:8px;font-size:14px
 <header><div class="wrap">LAKELAND SURVEYING · Rank platform</div></header>
 <main class="wrap">
 <h1>Nine counties. Six job themes.</h1>
+${score}
+<p><a class="card" href="${runUrl}">Run an answer-engine check</a></p>
 <p class="note">This is the tracking board. A row stays "Not checked" until a live run is stored. Google, ChatGPT, Perplexity, and Gemini do not publish a free rank feed, so a check is a sampled run, not a BrightLocal-style daily crawl.</p>
 <div class="cards">
 <div class="card"><div class="n">${COUNTIES.length}</div>Counties</div>
