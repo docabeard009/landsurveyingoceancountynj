@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lakeland client platform</title>
+<style>
+  body{margin:0;background:#f4f7f9;color:#13293a;font-family:Georgia,serif}
+  header{background:#0B2A45;color:#fff;border-bottom:3px solid #E2731B}
+  .bar{max-width:720px;margin:0 auto;padding:22px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:.14em;font-weight:700;font-size:13px}
+  .bar span{color:#E2731B}
+  main{max-width:720px;margin:0 auto;padding:36px 22px}
+  h1{font-weight:500;font-size:36px;margin:0 0 10px}
+  p,label{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+  form{background:#fff;border:1px solid #e4ebf0;border-radius:8px;padding:22px;margin-top:18px}
+  input{width:100%;padding:12px;border:1px solid #d7e0e6;border-radius:6px;font-size:16px}
+  button{margin-top:12px;width:100%;background:#0B2A45;color:#fff;border:0;border-radius:6px;padding:14px;font-weight:700}
+</style>
+</head>
+<body>
+<header><div class="bar">LAKELAND <span>SURVEYING</span> · Client platform</div></header>
+<main>
+  <h1>How the firm is doing.</h1>
+  <p>Rank checks, calls and texts from the site, review asks, and the feeds that still need a connected account.</p>
+  <form method="get" action="/.netlify/functions/client-platform">
+    <label for="key">Platform key</label>
+    <input id="key" name="key" type="password" required>
+    <button type="submit">Open the platform</button>
+  </form>
+</main>
+</body>
+</html>
