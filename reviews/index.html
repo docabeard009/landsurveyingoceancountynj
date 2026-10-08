@@ -686,9 +686,9 @@ const K = { cfg:'frt.cfg', tpl:'frt.tpl', cust:'frt.cust', dis:'frt.dis', tplV:'
 const FOLLOWUP_DAYS = 7;
 
 const TPL_DEFAULT = {
-  gSms:  "Hi {name}, this is the team at {business} — thanks for having us out{town}. If you were happy with the survey, would you mind leaving us a quick Google review? It genuinely helps us out — mentioning the {service} and your town helps the most.\n\n{link}\n\nThank you!",
+  gSms:  "Hi {name}, this is Lakeland Surveying — thank you for your business{town}. Reviews really help us out. This page has the Google button and a line you can paste:\n\n{link}\n\nThank you!",
   gSub:  "Quick favor from {business}",
-  gBody: "Hi {name},\n\nThanks again for choosing {business}{town}. It was a pleasure working with you.\n\nIf you were happy with how the job went, would you mind leaving us a short Google review? It takes about 30 seconds and it makes a real difference for a small local outfit like ours.\n\n{link}\n\nOne tip — if you can mention the {service} and your town in the review, that helps other neighbors find us.\n\nThank you,\nThe {business} team",
+  gBody: "Hi {name},\n\nThank you for your business{town}. Reviews really help us out.\n\nThis page has the Google button and a short line you can paste into the review:\n\n{link}\n\nThank you,\nLakeland Surveying",
   ySms:  "Hi {name}, this is the team at {business} — thanks again for the job{town}. If you have a minute, a quick Yelp review would mean a lot to us:\n\n{link}\n\nAppreciate it!",
   ySub:  "Thanks from {business}",
   yBody: "Hi {name},\n\nThanks again for trusting {business} with your {service}{town}.\n\nIf you were happy with the work, a quick Yelp review would help us a lot:\n\n{link}\n\nThank you,\nThe {business} team"
@@ -698,7 +698,7 @@ let cfg  = load(K.cfg, {...DEFAULTS});
 let tpl  = load(K.tpl, {...TPL_DEFAULT});
 // Push the branded templates to every device, even ones that saved an older set,
 // so the message reads the same for everyone. Bump TPL_VERSION to re-roll again.
-const TPL_VERSION = '2';
+const TPL_VERSION = '3';
 if (localStorage.getItem(K.tplV) !== TPL_VERSION) {
   tpl = {...TPL_DEFAULT};
   save(K.tpl, tpl);
@@ -760,7 +760,7 @@ function status(c){
 }
 
 function fill(str, c){
-  const link = (qrOrPlatform(c) === 'yelp' ? cfg.yelpUrl : cfg.googleUrl) || '';
+  const link = 'https://landsurveyingoceancountynj.com/review.html';
   return (str || '')
     .replace(/{name}/g,     first(c.name))
     .replace(/{business}/g, cfg.business || '')
