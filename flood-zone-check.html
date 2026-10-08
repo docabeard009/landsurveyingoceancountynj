@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shore flood zone check | Lakeland Surveying</title>
+<meta name="description" content="See the usual FEMA zone for Ocean County barrier-island towns, then request an elevation certificate.">
+<link rel="canonical" href="https://landsurveyingoceancountynj.com/flood-zone-check.html">
+<style>
+ body{margin:0;background:#f4f7f9;color:#13293a;font-family:Georgia,serif}
+ header{background:#0B2A45;color:#fff;border-bottom:3px solid #E2731B}
+ .bar{max-width:760px;margin:0 auto;padding:18px 22px;font-family:-apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.12em;font-weight:700;font-size:13px}
+ .bar span{color:#E2731B}
+ main{max-width:760px;margin:0 auto;padding:32px 22px 64px}
+ input,button{font:16px -apple-system,BlinkMacSystemFont,sans-serif;padding:12px;border-radius:6px}
+ input{border:1px solid #d7e0e6;width:100%;max-width:420px}
+ button{background:#0B2A45;color:#fff;border:0;font-weight:700}
+ #out{background:#fff;border:1px solid #e4ebf0;border-radius:8px;padding:16px;margin-top:16px}
+</style>
+</head>
+<body>
+<header><div class="bar">LAKELAND <span>SURVEYING</span></div></header>
+<main>
+<h1>Shore flood zone check</h1>
+<p>This is the usual zone for the town, not a determination for your lot. The official map is the FEMA Flood Map Service Center. An insurer asking for an elevation certificate means the FEMA form.</p>
+<form id="f">
+  <label>Town or address<br><input id="q" placeholder="Lavallette, Seaside, Ortley Beach" required></label>
+  <p><button type="submit">Check the usual zone</button></p>
+</form>
+<div id="out">Enter a shore town.</div>
+<p>A straightforward elevation certificate in Ocean County commonly runs about $600 to $1,500. That is a range, not a quote. <a href="contact.html">Request a quote</a> or call 917.463.6042.</p>
+</main>
+<script>
+const zones = {
+  "lavallette":"AE and VE both occur. Oceanfront blocks are often VE. Bay blocks are often AE.",
+  "ortley beach":"Much of Ortley Beach is VE or AE. Oceanfront is commonly VE.",
+  "seaside heights":"Oceanfront is commonly VE. Bayside blocks are often AE.",
+  "seaside park":"Oceanfront is commonly VE. Inland of the dune is often AE.",
+  "mantoloking":"Oceanfront lots are commonly VE.",
+  "bay head":"Oceanfront is commonly VE. Bay blocks are often AE.",
+  "brick":"Barrier-island sections follow the island zone. Mainland Brick is often AE or X.",
+  "toms river":"Mainland is often AE or X. Ortley Beach and the island sections are the VE risk.",
+  "long beach island":"Oceanfront is commonly VE. Bay blocks are often AE.",
+  "beach haven":"Oceanfront is commonly VE. Bay blocks are often AE."
+};
+document.getElementById("f").onsubmit = function(e){
+  e.preventDefault();
+  const q = document.getElementById("q").value.toLowerCase();
+  let hit = "This town is not in the short shore list. Check the FEMA map, then ask for an elevation certificate if the insurer or the town wants one.";
+  for (const k in zones) if (q.includes(k)) hit = zones[k];
+  document.getElementById("out").textContent = hit + " Next step: an elevation certificate if you are buying flood insurance or closing.";
+};
+</script>
+</body>
+</html>
