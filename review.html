@@ -15,7 +15,6 @@
   .card{background:#fff;border-radius:18px;padding:18px;margin-top:16px;box-shadow:0 16px 40px rgba(11,42,69,.08)}
   a.btn{display:block;text-align:center;text-decoration:none;color:#fff;border-radius:12px;padding:15px 16px;font-weight:700;margin-top:10px}
   .g{background:#0B2A45}
-  .y{background:#d32323}
   textarea{width:100%;min-height:96px;border:1px solid #d7e0e6;border-radius:12px;padding:12px;font:15px/1.4 sans-serif}
   .hint{font-size:13px;color:#69818f}
 </style>
@@ -27,12 +26,11 @@
   <p>Thank you for your business. Reviews really help us out. If you have a minute, mention the town and the job: elevation certificate, boundary, or closing.</p>
   <div class="card">
     <a class="btn g" id="google" href="https://share.google/SHhVbNamu9LHwb7rn">Review on Google</a>
-    <a class="btn y" id="yelp" href="https://www.yelp.com/writeareview/biz/LvQ1CQridhajSuJKO7Vo5g">Review on Yelp</a>
   </div>
   <div class="card">
     <p style="margin-top:0"><b>A line you can paste</b></p>
     <textarea readonly>Lakeland Surveying surveyed our property in [town]. They showed up when they said they would, and the signed survey was ready for our [closing / flood insurance / fence]. Clear and professional.</textarea>
-    <p class="hint">Google opens the Lavallette listing. Tap Write a review. Yelp opens the Lavallette business page.</p>
+    <p class="hint">Google opens the Lavallette listing. Tap Write a review.</p>
   </div>
 </div>
 <script>
@@ -44,7 +42,6 @@ function logClick(platform){
   }).catch(function(){});
 }
 document.getElementById("google").addEventListener("click", function(){ logClick("google"); });
-document.getElementById("yelp").addEventListener("click", function(){ logClick("yelp"); });
 </script>
 </body>
 </html>
