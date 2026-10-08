@@ -22,7 +22,19 @@
 <p>Send four things and the survey can be scheduled: the property address, the town, the closing date, and the title commitment if you have it. The field crew checks the exceptions that can be seen on the ground. The plan comes back signed and sealed.</p>
 <p>A straightforward residential title survey in Ocean County commonly runs about $900 to $2,500. Waterfront and older descriptions often cost more. That is a range, not a quote. The seal is William C. Buchok, PLS, Marc J. Cifone, PLS, or Jeffrey O. Males, PLS. The license number is on the seal.</p>
 <p>Office: 1501 Grand Central Avenue, Lavallette, NJ 08735. Phone 917.463.6042.</p>
-<p><a class="btn" href="contact.html">Send the closing file</a></p>
+<form action="https://formspree.io/f/xnjywovb" method="POST" enctype="multipart/form-data" style="display:grid;gap:12px;max-width:560px;background:#fff;border:1px solid #e4ebf0;border-radius:8px;padding:18px">
+  <input type="hidden" name="_subject" value="Title company survey request">
+  <input type="text" name="_gotcha" style="display:none">
+  <label>Firm<input name="firm" required style="width:100%;padding:10px"></label>
+  <label>Your name<input name="name" required style="width:100%;padding:10px"></label>
+  <label>Email<input name="email" type="email" required style="width:100%;padding:10px"></label>
+  <label>Property address<input name="address" required style="width:100%;padding:10px"></label>
+  <label>Town<input name="town" required style="width:100%;padding:10px"></label>
+  <label>Closing date<input name="closing_date" style="width:100%;padding:10px"></label>
+  <label>Commitment or survey<input name="attachment" type="file"></label>
+  <button class="btn" type="submit" style="border:0;cursor:pointer">Send the file</button>
+</form>
+<p>The file goes to the same quote inbox. If it is over 10 MB, email it instead.</p>
 </main>
 </body>
 </html>
