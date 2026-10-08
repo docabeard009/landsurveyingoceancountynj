@@ -20,7 +20,7 @@
   .lead { font-size:18px; line-height:1.5; color:#31485a; margin:0 0 22px; }
   .panel { background:#fff; border:1px solid var(--line); border-radius:8px; padding:22px; }
   .kicker { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--orange); font-weight:700; margin:0 0 8px; }
-  a.btn { display:block; text-align:center; text-decoration:none; background:var(--navy); color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-weight:700; font-size:16px; border-radius:6px; padding:15px 16px; }
+  button.btn, a.btn { width:100%; display:block; text-align:center; text-decoration:none; background:var(--navy); color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-weight:700; font-size:16px; border-radius:6px; padding:15px 16px; }
   a.btn:hover { background:#143a5c; }
   .note { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:13px; color:var(--muted); margin:12px 0 0; }
   textarea { width:100%; min-height:110px; margin-top:8px; border:1px solid var(--line); border-radius:6px; padding:12px; font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--ink); background:#fbfcfd; }
@@ -39,22 +39,26 @@
   <p class="lead">Reviews really help us out. If you have a minute, a Google review with the town and the job — an elevation certificate, a boundary, or a closing — helps the next shore owner find a licensed surveyor.</p>
   <div class="panel">
     <p class="kicker">Google review</p>
-    <a class="btn" id="google" href="https://share.google/SHhVbNamu9LHwb7rn">Write a review</a>
-    <p class="note">Opens the Lavallette listing. Tap Write a review.</p>
+    <button class="btn" id="google" type="button">Copy the line and open Google</button>
+    <p class="note" id="status">Copies the line, then opens the Lavallette review page. Tap the stars, then paste.</p>
   </div>
   <div class="panel" style="margin-top:14px">
-    <p class="kicker">If you want a starting line</p>
-    <textarea readonly>Lakeland Surveying surveyed our property in [town]. They showed up when they said they would, and the signed survey was ready for our [closing / flood insurance / fence]. Clear and professional.</textarea>
+    <p class="kicker">The line that gets copied</p>
+    <textarea id="line" readonly>Lakeland Surveying surveyed our property in [town]. They showed up when they said they would, and the signed survey was ready for our [closing / flood insurance / fence]. Clear and professional.</textarea>
   </div>
   <p class="office">Lakeland Surveying · 1501 Grand Central Avenue, Lavallette, NJ 08735 · 917.463.6042</p>
 </main>
 <script>
-document.getElementById("google").addEventListener("click", function(){
+document.getElementById("google").addEventListener("click", async function(){
+  var line = document.getElementById("line").value;
+  try { await navigator.clipboard.writeText(line); document.getElementById("status").textContent = "Copied. Google is opening — tap the stars, then paste."; }
+  catch (e) { document.getElementById("status").textContent = "Google is opening. If the line did not copy, select it above and paste."; }
   fetch("/.netlify/functions/review-log", {
     method:"POST",
     headers:{"content-type":"application/json"},
     body:JSON.stringify({events:[{ev:"landed", client:"lakeland", who:"", town:"", service:"", platform:"google", channel:""}]})
   }).catch(function(){});
+  window.location.href = "https://share.google/SHhVbNamu9LHwb7rn";
 });
 </script>
 </body>
