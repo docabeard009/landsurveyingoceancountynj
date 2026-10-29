@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/styles.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "@id": "https://landsurveyingoceancountynj.com/#org", "name": "Lakeland Surveying, Inc.", "image": "https://landsurveyingoceancountynj.com/assets/og.jpg", "url": "https://landsurveyingoceancountynj.com", "telephone": "917.463.6042", "priceRange": "$$", "foundingDate": "1972", "address": {"@type": "PostalAddress", "streetAddress": "1501 Grand Central Avenue", "addressLocality": "Lavallette", "addressRegion": "NJ", "postalCode": "08735", "addressCountry": "US"}, "geo": {"@type": "GeoCoordinates", "latitude": 39.9712, "longitude": -74.0676}, "knowsAbout": ["FEMA Flood Elevation Certificate", "Boundary Survey", "Topographic Survey", "ALTA Survey", "Construction Stakeout"], "areaServed": {"@type": "AdministrativeArea", "name": "Ocean County, New Jersey"}}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Lakeland Surveying","url":"https://landsurveyingoceancountynj.com"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "@id": "https://landsurveyingoceancountynj.com/#org", "name": "Lakeland Surveying, Inc.", "image": "https://landsurveyingoceancountynj.com/assets/og.jpg", "url": "https://landsurveyingoceancountynj.com", "telephone": "917.463.6042", "priceRange": "$$", "foundingDate": "1972", "address": {"@type": "PostalAddress", "streetAddress": "1501 Grand Central Avenue", "addressLocality": "Lavallette", "addressRegion": "NJ", "postalCode": "08735", "addressCountry": "US"}, "geo": {"@type": "GeoCoordinates", "latitude": 39.9712, "longitude": -74.0676}, "knowsAbout": ["FEMA Flood Elevation Certificate", "Boundary Survey", "Topographic Survey", "ALTA Survey", "Construction Stakeout"], "areaServed": {"@type": "AdministrativeArea", "name": "Ocean County, New Jersey"}}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Lakeland Surveying","url":"https://landsurveyingoceancountynj.com"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"VideoObject","name":"5 Reasons You Need a Property Survey","description":"A short explainer from Lakeland Surveying on the five most common reasons New Jersey property owners need a professional land survey","thumbnailUrl":"https://landsurveyingoceancountynj.com/assets/video/property-survey-reasons-poster.jpg","uploadDate":"2026-10-29","duration":"PT1M32S","contentUrl":"https://landsurveyingoceancountynj.com/assets/video/property-survey-reasons.mp4","embedUrl":"https://landsurveyingoceancountynj.com/#video","publisher":{"@id":"https://landsurveyingoceancountynj.com/#org"}}</script>
   <!-- Favicon -->
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -102,6 +102,42 @@
 </div>
   </div>
 </section>
+
+<section class="vid-sec" id="video">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Watch · 1:32</div>
+      <h2>5 reasons you need a property survey.</h2>
+      <p>Buying, building, fencing or settling a line with a neighbor? This short video covers when a survey protects you, and why it costs far less than the problems it prevents.</p>
+    </div>
+    <div class="vid-frame reveal">
+      <video id="home-video" controls playsinline preload="none" width="1280" height="720"
+        poster="assets/video/property-survey-reasons-poster.jpg"
+        aria-label="Video: 5 reasons you need a property survey">
+        <source src="assets/video/property-survey-reasons.mp4" type="video/mp4">
+        Your browser can't play this video. <a href="assets/video/property-survey-reasons.mp4">Download it here</a>.
+      </video>
+      <button class="vid-play" type="button" aria-label="Play video: 5 reasons you need a property survey">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
+      </button>
+    </div>
+    <div class="vid-cta reveal">
+      <a class="btn btn-primary" href="contact.html">Request a free quote</a>
+      <a class="vid-link" href="tel:+19174636042">or call 917.463.6042</a>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var v=document.getElementById('home-video'); if(!v) return;
+  var b=v.parentNode.querySelector('.vid-play'), fired={};
+  function ev(n){ if(fired[n]) return; fired[n]=1; if(window.gtag) gtag('event',n,{video_title:'5 Reasons You Need a Property Survey',video_url:'/assets/video/property-survey-reasons.mp4'}); }
+  b.addEventListener('click',function(){ v.play(); });
+  v.addEventListener('play',function(){ v.parentNode.classList.add('playing'); ev('video_start'); });
+  v.addEventListener('timeupdate',function(){ if(v.duration && v.currentTime/v.duration>=0.5) ev('video_progress_50'); });
+  v.addEventListener('ended',function(){ ev('video_complete'); });
+})();
+</script>
 
 <section>
   <div class="wrap">
