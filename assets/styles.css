@@ -419,3 +419,6 @@ footer a:hover{color:#fff}
 .vid-cta{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:28px}
 .vid-link{color:var(--ink);font-weight:500;text-decoration:none;border-bottom:1px solid var(--water-soft)}
 @media (max-width:640px){.vid-play{width:64px;height:64px}.vid-play svg{width:26px;height:26px}.vid-frame{border-radius:10px}}
+.faq.vid-tr{max-width:960px;margin:22px 0 0}
+.faq.vid-tr .ans p+p,.tr-block p+p{margin-top:12px}
+.rel{font-size:14.5px;color:var(--muted)}
